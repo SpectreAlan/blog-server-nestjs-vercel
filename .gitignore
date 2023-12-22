@@ -2,6 +2,8 @@
 /dist
 /node_modules
 
+.env
+
 # Logs
 logs
 *.log
@@ -33,6 +35,4 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-.env
 pnpm-lock.yaml
