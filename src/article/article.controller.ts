@@ -6,18 +6,22 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  UsePipes,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { ClassValidatorPipe } from '../core/pipes/validationPipe';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articleService.create(createArticleDto);
+  @UsePipes(ClassValidatorPipe)
+  create(@Body() createArticleDto: CreateArticleDto, @Req() req) {
+    return this.articleService.create(req.user, createArticleDto);
   }
 
   @Get()
