@@ -1,11 +1,11 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Req,
   UsePipes,
 } from '@nestjs/common';
@@ -29,9 +29,9 @@ export class ArticleController {
     return this.articleService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleService.findOne(+id);
+  @Get(':_id')
+  findOne(@Param('_id') id: number) {
+    return this.articleService.findOne(id);
   }
 
   @Patch(':id')
@@ -39,8 +39,8 @@ export class ArticleController {
     return this.articleService.update(+id, updateArticleDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articleService.remove(+id);
+  @Delete(':_id')
+  remove(@Param('_id') id: string) {
+    return this.articleService.remove(id);
   }
 }
