@@ -26,15 +26,15 @@ export class ArticleService {
     return `This action returns all article`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  async findOne(id: number) {
+    return this.articleEntity.findById(id);
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {
     return `This action updates a #${id} article`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} article`;
+  remove(id: string) {
+    return this.articleEntity.findByIdAndDelete(id);
   }
 }
