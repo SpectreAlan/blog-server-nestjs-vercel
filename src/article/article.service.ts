@@ -13,6 +13,7 @@ export class ArticleService {
   ) {}
 
   async create(user, article: CreateArticleDto): Promise<ArticleEntity> {
+    console.log(article);
     const { title } = article;
     const doc = await this.articleEntity.findOne({ title });
     if (doc) {

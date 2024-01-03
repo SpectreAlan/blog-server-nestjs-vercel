@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-
-export type ArticleDocumentType = HydratedDocument<ArticleEntity>;
+import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema()
 export class ArticleEntity {
@@ -14,11 +12,15 @@ export class ArticleEntity {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ required: true })
-  category: string;
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Category',
+    required: true,
+  })
+  category: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true })
-  tag: string;
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Tag' }] })
+  tags: MongooseSchema.Types.ObjectId[];
 
   @Prop({ required: true })
   cover: string;
@@ -34,12 +36,11 @@ export class ArticleEntity {
 
   @Prop({ default: 1 })
   status: number;
-
-  @Prop({ default: '' })
-  date_create: string;
-
-  @Prop({ default: '' })
-  date_update: string;
 }
 
-export const ArticleSchema = SchemaFactory.createForClass(ArticleEntity);
+export const ArticleSchema = SchemaFactory.createForClass(ArticleEntity).set(
+  'timestamps',
+  {
+    currentTime: () => Math.floor(Date.now()),
+  },
+);
