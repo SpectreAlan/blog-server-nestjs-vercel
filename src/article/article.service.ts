@@ -23,7 +23,7 @@ export class ArticleService {
   }
 
   findAll() {
-    return `This action returns all article`;
+    return this.articleEntity.find();
   }
 
   async findOne(id: number) {
