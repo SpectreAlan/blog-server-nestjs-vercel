@@ -10,29 +10,71 @@ export class CategoryService {
     @InjectModel('Category')
     private readonly categoryEntity: Model<CategoryEntity>,
   ) {}
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryEntity> {
-    const { title } = createCategoryDto;
-    const doc = await this.categoryEntity.findOne({ title });
-    if (doc) {
-      throw new HttpException('分类已存在', HttpStatus.BAD_REQUEST);
+  async create(category: CreateCategoryDto) {
+    try {
+      const create = await this.categoryEntity.create(category);
+      return {
+        data: create.save(),
+        message: '添加成功',
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new HttpException('分类已存在', HttpStatus.BAD_REQUEST);
+      }
+      throw error;
     }
-    const create = await this.categoryEntity.create(createCategoryDto);
-    return create.save();
+  }
+  async findIdsByTitles(titles: string[]) {
+    const categories = await this.categoryEntity
+      .find({ title: { $in: titles } })
+      .exec();
+    return categories.map((category) => category._id);
+  }
+  async findAll({ page, limit, title }) {
+    const query: any = {};
+    if (title) {
+      query.title = { $regex: new RegExp(title, 'i') };
+    }
+    const [categories, total] = await Promise.all([
+      this.categoryEntity
+        .find(query)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec(),
+      this.categoryEntity.countDocuments(query).exec(),
+    ]);
+
+    return { data: { total, list: categories } };
   }
 
-  findAll() {
-    return this.categoryEntity.find();
+  async findOne(id: string) {
+    const data = await this.categoryEntity.findById(id);
+    return {
+      data,
+    };
   }
 
-  findOne(id: number) {
-    return this.categoryEntity.findById(id);
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryEntity.findById(id);
+    if (!category) {
+      throw new HttpException('分类不存在', HttpStatus.BAD_REQUEST);
+    }
+    Object.assign(category, updateCategoryDto);
+    const data = await category.save();
+    return {
+      data,
+      message: '更新成功',
+    };
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return this.categoryEntity.findByIdAndDelete(id);
+  async remove(id: string) {
+    const data = await this.categoryEntity.findByIdAndDelete(id);
+    if (!data) {
+      throw new HttpException('分类不存在', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      data: null,
+      message: '删除成功',
+    };
   }
 }
