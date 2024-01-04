@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UsePipes,
   Query,
 } from '@nestjs/common';
@@ -21,8 +20,8 @@ export class ArticleController {
 
   @Post()
   @UsePipes(ClassValidatorPipe)
-  create(@Body() createArticleDto: CreateArticleDto, @Req() req) {
-    return this.articleService.create(req.user, createArticleDto);
+  create(@Body() createArticleDto: CreateArticleDto) {
+    return this.articleService.create(createArticleDto);
   }
 
   @Get()
@@ -45,15 +44,15 @@ export class ArticleController {
   }
 
   @Get(':_id')
-  findOne(@Param('_id') id: number) {
+  findOne(@Param('_id') id: string) {
     return this.articleService.findOne(id);
   }
 
   @Patch(':id')
+  @UsePipes(ClassValidatorPipe)
   update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articleService.update(+id, updateArticleDto);
+    return this.articleService.update(id, updateArticleDto);
   }
-
   @Delete(':_id')
   remove(@Param('_id') id: string) {
     return this.articleService.remove(id);

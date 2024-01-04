@@ -16,7 +16,7 @@ export class ArticleService {
     private readonly tagService: TagService,
   ) {}
 
-  async create(user, article: CreateArticleDto) {
+  async create(article: CreateArticleDto) {
     try {
       const create = await this.articleEntity.create(article);
       return {
@@ -69,19 +69,33 @@ export class ArticleService {
     return { data: { total, list: formattedArticles } };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
+    const data = await this.articleEntity.findById(id);
     return {
-      data: this.articleEntity.findById(id),
+      data,
     };
   }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  async update(id: string, updateArticleDto: UpdateArticleDto) {
+    const article = await this.articleEntity.findById(id);
+    if (!article) {
+      throw new HttpException('文章不存在', HttpStatus.BAD_REQUEST);
+    }
+    Object.assign(article, updateArticleDto);
+    const data = await article.save();
+    return {
+      data,
+      message: '更新成功',
+    };
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const data = await this.articleEntity.findByIdAndDelete(id);
+    if (!data) {
+      throw new HttpException('文章不存在', HttpStatus.BAD_REQUEST);
+    }
     return {
-      data: this.articleEntity.findByIdAndDelete(id),
+      data: null,
       message: '删除成功',
     };
   }
