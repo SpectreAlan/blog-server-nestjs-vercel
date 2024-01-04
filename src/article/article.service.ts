@@ -12,15 +12,19 @@ export class ArticleService {
     private readonly articleEntity: Model<ArticleEntity>,
   ) {}
 
-  async create(user, article: CreateArticleDto): Promise<ArticleEntity> {
-    console.log(article);
-    const { title } = article;
-    const doc = await this.articleEntity.findOne({ title });
-    if (doc) {
-      throw new HttpException('文章已存在', HttpStatus.BAD_REQUEST);
+  async create(user, article: CreateArticleDto) {
+    try {
+      const create = await this.articleEntity.create(article);
+      return {
+        data: create.save(),
+        message: '添加成功',
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new HttpException('文章已存在', HttpStatus.BAD_REQUEST);
+      }
+      throw error;
     }
-    const create = await this.articleEntity.create(article);
-    return create.save();
   }
 
   findAll() {
@@ -28,11 +32,22 @@ export class ArticleService {
       .find()
       .populate('category')
       .populate('tags')
-      .exec();
+      .exec()
+      .then((articles) => {
+        return {
+          data: articles.map((article) => ({
+            ...article.toObject(),
+            tags: article.tags.map((tag: any) => tag.title),
+            category: (article.category as any).title,
+          })),
+        };
+      });
   }
 
   async findOne(id: number) {
-    return this.articleEntity.findById(id);
+    return {
+      data: this.articleEntity.findById(id),
+    };
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {
@@ -40,6 +55,9 @@ export class ArticleService {
   }
 
   remove(id: string) {
-    return this.articleEntity.findByIdAndDelete(id);
+    return {
+      data: this.articleEntity.findByIdAndDelete(id),
+      message: '删除成功',
+    };
   }
 }

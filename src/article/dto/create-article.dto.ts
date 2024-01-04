@@ -17,9 +17,9 @@ export class CreateArticleDto {
   @ArrayMinSize(1, { message: '文章标签必填' })
   tags: MongooseSchema.Types.ObjectId[];
 
-  @IsNotEmpty({ message: '文章标签必填' })
+  @IsNotEmpty({ message: '关键字必填' })
   readonly keywords: string;
 
-  @IsNotEmpty({ message: '文章标签必填' })
+  @IsNotEmpty({ message: '封面必填' })
   readonly cover: string;
 }
