@@ -1,12 +1,15 @@
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
-import { ValidationError } from 'class-validator';
+import { plainToClass } from 'class-transformer';
+import { ValidationError, validate } from 'class-validator';
 
 export class ClassValidatorPipe extends ValidationPipe {
   public async transform(value: unknown, metadata: any): Promise<unknown> {
-    const transformedValue = await super.transform(value, metadata);
-    const errors = await this.validate(transformedValue, {
+    const transformedValue = plainToClass(metadata.metatype, value);
+    console.log(transformedValue);
+    const errors = await validate(transformedValue as object, {
       skipMissingProperties: true,
     });
+    console.log(errors);
     if (errors.length > 0) {
       const errorMessage = this.handleError(errors);
       throw new BadRequestException(errorMessage);
