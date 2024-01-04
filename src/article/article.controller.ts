@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   UsePipes,
+  Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -25,8 +26,22 @@ export class ArticleController {
   }
 
   @Get()
-  findAll() {
-    return this.articleService.findAll();
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('title') title: string,
+    @Query('status') status: number,
+    @Query('category') category: string,
+    @Query('tags') tags: string,
+  ) {
+    return this.articleService.findAll({
+      page,
+      limit,
+      title,
+      status,
+      category,
+      tags,
+    });
   }
 
   @Get(':_id')
