@@ -24,7 +24,11 @@ export class ArticleService {
   }
 
   findAll() {
-    return this.articleEntity.find();
+    return this.articleEntity
+      .find()
+      .populate('category')
+      .populate('tags')
+      .exec();
   }
 
   async findOne(id: number) {

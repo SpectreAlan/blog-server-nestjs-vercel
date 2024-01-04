@@ -1,4 +1,5 @@
 import { IsArray, IsNotEmpty, ArrayMinSize } from 'class-validator';
+import { Schema as MongooseSchema } from 'mongoose';
 export class CreateArticleDto {
   @IsNotEmpty({ message: '文章标题必填' })
   readonly title: string;
@@ -14,7 +15,7 @@ export class CreateArticleDto {
 
   @IsArray()
   @ArrayMinSize(1, { message: '文章标签必填' })
-  tags: string[];
+  tags: MongooseSchema.Types.ObjectId[];
 
   @IsNotEmpty({ message: '文章标签必填' })
   readonly keywords: string;
