@@ -6,7 +6,7 @@ export class ResponseFilter extends BaseExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const { status, message = 'Internal Server Error' } = exception;
+    const { status = 400, message = 'Internal Server Error' } = exception;
     response.status(status).json({
       code: status,
       message,
