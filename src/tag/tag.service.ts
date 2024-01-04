@@ -28,6 +28,11 @@ export class TagService {
     return this.tagEntity.findById(id);
   }
 
+  async findIdsByTitles(titles: string[]) {
+    const tags = await this.tagEntity.find({ title: { $in: titles } }).exec();
+    return tags.map((tag) => tag._id);
+  }
+
   update(id: number, updateTagDto: UpdateTagDto) {
     return `This action updates a #${id} tag`;
   }
