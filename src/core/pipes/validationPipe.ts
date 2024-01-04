@@ -8,6 +8,7 @@ export class ClassValidatorPipe extends ValidationPipe {
     const errors = await validate(transformedValue as object, {
       skipMissingProperties: true,
     });
+    console.log(errors);
     if (errors.length > 0) {
       const errorMessage = this.handleError(errors);
       throw new BadRequestException(errorMessage);
