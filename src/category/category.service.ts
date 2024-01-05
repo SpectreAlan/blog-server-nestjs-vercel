@@ -13,8 +13,9 @@ export class CategoryService {
   async create(category: CreateCategoryDto) {
     try {
       const create = await this.categoryEntity.create(category);
+      const data = await create.save();
       return {
-        data: create.save(),
+        data,
         message: '添加成功',
       };
     } catch (error) {
