@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class ArticleEntity {
   @Prop({ required: true, unique: true })
   title: string;
@@ -38,9 +38,4 @@ export class ArticleEntity {
   status: number;
 }
 
-export const ArticleSchema = SchemaFactory.createForClass(ArticleEntity).set(
-  'timestamps',
-  {
-    currentTime: () => Math.floor(Date.now()),
-  },
-);
+export const ArticleSchema = SchemaFactory.createForClass(ArticleEntity);

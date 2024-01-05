@@ -19,9 +19,10 @@ export class ArticleService {
   async create(article: CreateArticleDto) {
     try {
       const create = await this.articleEntity.create(article);
+      const data = await create.save();
       return {
-        data: create.save(),
-        message: '添加成功',
+        data,
+        message: '创建成功',
       };
     } catch (error) {
       if (error.code === 11000) {
