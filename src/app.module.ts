@@ -8,6 +8,7 @@ import { CategoryModule } from './category/category.module';
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 import { ResponseFilter } from './core/filters/response.filter';
+import { FileModule } from './file/file.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -18,6 +19,7 @@ dotenv.config();
     ArticleModule,
     TagModule,
     CategoryModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [
