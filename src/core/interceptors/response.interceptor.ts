@@ -7,15 +7,43 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+export const formatResponseDate = (time: Date): string => {
+  return time.toISOString().replace('T', ' ').substring(0, 19);
+};
+export const formatResponseData = (data: any): unknown => {
+  if (!data) {
+    return null;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { _id, __v = '', ...res } = data;
+  res.id = _id;
+  if (!data?.updatedAt) {
+    return res;
+  }
+  const { updatedAt, createdAt, ...other } = res;
+  return {
+    ...other,
+    createdAt: formatResponseDate(createdAt),
+    updatedAt: formatResponseDate(updatedAt),
+  };
+};
+
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map(({ data, message = 'success' }) => ({
-        code: 0,
-        message,
-        data,
-      })),
+      map(({ data = null, message = 'success' }) => {
+        if (data?.list) {
+          data.list = data.list.map((item) => formatResponseData(item));
+        } else {
+          data = formatResponseData(data);
+        }
+        return {
+          code: 0,
+          message,
+          data,
+        };
+      }),
     );
   }
 }
