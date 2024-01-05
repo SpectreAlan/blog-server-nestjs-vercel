@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class TagEntity {
   @Prop({ required: true, unique: true })
   title: string;
@@ -9,9 +9,4 @@ export class TagEntity {
   description: string;
 }
 
-export const TagSchema = SchemaFactory.createForClass(TagEntity).set(
-  'timestamps',
-  {
-    currentTime: () => Math.floor(Date.now()),
-  },
-);
+export const TagSchema = SchemaFactory.createForClass(TagEntity);

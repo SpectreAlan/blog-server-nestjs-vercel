@@ -12,14 +12,20 @@ export class TagService {
     private readonly tagEntity: Model<TagEntity>,
   ) {}
 
-  async create(createTagDto: CreateTagDto): Promise<TagEntity> {
-    const { title } = createTagDto;
-    const doc = await this.tagEntity.findOne({ title });
-    if (doc) {
-      throw new HttpException('标签已存在', HttpStatus.BAD_REQUEST);
+  async create(createTagDto: CreateTagDto) {
+    try {
+      const create = await this.tagEntity.create(createTagDto);
+      const data = await create.save();
+      return {
+        message: '创建成功',
+        data,
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new HttpException('标签已存在', HttpStatus.BAD_REQUEST);
+      }
+      throw error;
     }
-    const create = await this.tagEntity.create(createTagDto);
-    return create.save();
   }
 
   async findAll({ page, limit, title }) {
