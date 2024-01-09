@@ -8,13 +8,16 @@ import {
   Delete,
   UsePipes,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ClassValidatorPipe } from '../core/pipes/validationPipe';
+import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
 
 @Controller('category')
+@UseInterceptors(ResponseInterceptor)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
