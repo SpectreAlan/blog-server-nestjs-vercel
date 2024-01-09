@@ -13,14 +13,14 @@ import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { getAliOSSConfig } from '../core/utils';
-import { InjectModel } from "@nestjs/mongoose";
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class FileService {
-
   constructor(
     @InjectModel('File')
-    private readonly fileEntity: Model<FileEntity>) {}
+    private readonly fileEntity: Model<FileEntity>,
+  ) {}
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
