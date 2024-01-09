@@ -9,6 +9,7 @@ import { FileController } from './file.controller';
 import { FileSchema } from './entities/file.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ValidateIdMiddleware } from '../core/middleware/validate-id.middleware';
+import { AuthMiddleware } from '../core/middleware/auth.middleware';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'File', schema: FileSchema }])],
@@ -21,5 +22,8 @@ export class FileModule implements NestModule {
     consumer
       .apply(ValidateIdMiddleware)
       .forRoutes({ path: 'file/:id', method: RequestMethod.ALL });
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: 'file', method: RequestMethod.ALL });
   }
 }

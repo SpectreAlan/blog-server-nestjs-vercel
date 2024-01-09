@@ -13,8 +13,10 @@ import { Express } from 'express';
 import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadFileDto } from './dto/upload-file.dto';
+import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
 
 @Controller('file')
+@UseInterceptors(ResponseInterceptor)
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
