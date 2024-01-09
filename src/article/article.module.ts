@@ -11,6 +11,7 @@ import { ArticleSchema } from './entities/article.entity';
 import { TagModule } from '../tag/tag.module';
 import { CategoryModule } from '../category/category.module';
 import { ValidateIdMiddleware } from '../core/middleware/validate-id.middleware';
+import { AuthMiddleware } from '../core/middleware/auth.middleware';
 @Module({
   imports: [
     TagModule,
@@ -25,5 +26,8 @@ export class ArticleModule implements NestModule {
     consumer
       .apply(ValidateIdMiddleware)
       .forRoutes({ path: 'article/:id', method: RequestMethod.ALL });
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: 'article', method: RequestMethod.ALL });
   }
 }
