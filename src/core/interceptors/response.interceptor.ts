@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export const formatResponseDate = (time: Date): string => {
-  console.log(time);
   return time.toISOString().replace('T', ' ').substring(0, 19);
 };
 export const formatResponseData = (data: any): unknown => {
