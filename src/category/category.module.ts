@@ -9,6 +9,7 @@ import { CategoryController } from './category.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategorySchema } from './entities/category.entity';
 import { ValidateIdMiddleware } from '../core/middleware/validate-id.middleware';
+import { AuthMiddleware } from '../core/middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -23,5 +24,8 @@ export class CategoryModule implements NestModule {
     consumer
       .apply(ValidateIdMiddleware)
       .forRoutes({ path: 'category/:id', method: RequestMethod.ALL });
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: 'category', method: RequestMethod.ALL });
   }
 }
