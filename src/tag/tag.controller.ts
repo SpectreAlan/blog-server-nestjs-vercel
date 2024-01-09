@@ -8,13 +8,16 @@ import {
   Delete,
   Query,
   UsePipes,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { ClassValidatorPipe } from '../core/pipes/validationPipe';
+import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
 
 @Controller('tag')
+@UseInterceptors(ResponseInterceptor)
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 

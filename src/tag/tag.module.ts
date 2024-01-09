@@ -9,6 +9,7 @@ import { TagController } from './tag.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TagSchema } from './entities/tag.entity';
 import { ValidateIdMiddleware } from '../core/middleware/validate-id.middleware';
+import { AuthMiddleware } from '../core/middleware/auth.middleware';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Tag', schema: TagSchema }])],
@@ -21,5 +22,8 @@ export class TagModule implements NestModule {
     consumer
       .apply(ValidateIdMiddleware)
       .forRoutes({ path: 'tag/:id', method: RequestMethod.ALL });
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: 'tag', method: RequestMethod.ALL });
   }
 }
