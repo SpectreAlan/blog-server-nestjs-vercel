@@ -33,7 +33,7 @@ export class TagService {
     if (title) {
       query.title = { $regex: new RegExp(title, 'i') };
     }
-    const [tags, total] = await Promise.all([
+    const [list, total] = await Promise.all([
       this.tagEntity
         .find(query)
         .skip((page - 1) * limit)
@@ -41,7 +41,7 @@ export class TagService {
         .exec(),
       this.tagEntity.countDocuments(query).exec(),
     ]);
-    return { data: { total, list: tags } };
+    return { data: { total, list } };
   }
 
   async findOne(id: string) {
