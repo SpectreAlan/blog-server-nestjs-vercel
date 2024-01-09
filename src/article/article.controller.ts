@@ -8,13 +8,16 @@ import {
   Post,
   UsePipes,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { ClassValidatorPipe } from '../core/pipes/validationPipe';
+import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
 
 @Controller('article')
+@UseInterceptors(ResponseInterceptor)
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
