@@ -1,14 +1,16 @@
 import { Req, Controller, Get, Res } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, Inject } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import { sign } from 'jsonwebtoken';
-import * as process from 'process';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    @Inject(UserService)
+    private readonly userService: UserService,
+  ) {}
 
   @Get('github')
   @UseGuards(AuthGuard('github'))
@@ -17,7 +19,7 @@ export class AuthController {
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
   async githubLoginCallback(@Req() req, @Res() res: ExpressResponse) {
-    const user = await this.authService.validateGithubUser(req.user);
+    const user = await this.userService.validateGithubUser(req.user);
     const { status, nickName, role, avatar, account } = user;
     let encodedUser: string = 'null';
     if (status) {
