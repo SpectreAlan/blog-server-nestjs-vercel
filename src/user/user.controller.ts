@@ -15,6 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ClassValidatorPipe } from '../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
+import { AdminInterceptor } from '../core/interceptors/admin.interceptor';
 
 @Controller('user')
 @UseInterceptors(ResponseInterceptor)
@@ -22,12 +23,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseInterceptors(AdminInterceptor)
   @UsePipes(ClassValidatorPipe)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
+  @UseInterceptors(AdminInterceptor)
   findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
