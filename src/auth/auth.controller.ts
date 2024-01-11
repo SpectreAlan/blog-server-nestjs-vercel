@@ -1,9 +1,19 @@
-import { Req, Controller, Get, Res } from '@nestjs/common';
+import {
+  Req,
+  Controller,
+  Get,
+  Res,
+  Post,
+  UsePipes,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UseGuards, Inject } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
-import { sign } from 'jsonwebtoken';
 import { UserService } from '../user/user.service';
+import { responseLoginResult } from '../core/utils';
+import { ClassValidatorPipe } from '../core/pipes/validationPipe';
+import { LoginUserDto } from '../user/dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -20,20 +30,13 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubLoginCallback(@Req() req, @Res() res: ExpressResponse) {
     const user = await this.userService.validateGithubUser(req.user);
-    const { status, nickName, role, avatar, account } = user;
-    let encodedUser: string = 'null';
-    if (status) {
-      encodedUser = Buffer.from(
-        JSON.stringify({ nickName, role, avatar, status }),
-      ).toString('base64');
-      const token = sign({ account, role }, process.env.SECRET_KEY, {
-        expiresIn: '1h',
-      });
-      res.cookie('token', token, { httpOnly: true });
-    }
-    return res.redirect(
-      'http://localhost:3000/home.html?token=' +
-        encodeURIComponent(encodedUser),
-    );
+    responseLoginResult(res, user);
+  }
+
+  @Post('login')
+  @UsePipes(ClassValidatorPipe)
+  async login(@Body() loginUserDto: LoginUserDto, @Res() res: ExpressResponse) {
+    const user = await this.userService.login(loginUserDto);
+    responseLoginResult(res, user);
   }
 }
