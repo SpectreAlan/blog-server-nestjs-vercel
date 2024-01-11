@@ -4,6 +4,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { LoginUserDto } from './dto/login-user.dto';
+import * as bcrypt from 'bcrypt';
+import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 
 @Injectable()
 export class UserService {
@@ -25,6 +28,13 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    const { account, password } = loginUserDto;
+    const user = await this.userEntity.findOne({ account });
+    const result = await bcrypt.compare(password, user?.password);
+    return result ? user.toObject() : null;
   }
 
   async findAll({ page, limit, account }) {
@@ -79,6 +89,27 @@ export class UserService {
     return {
       data,
       message: '更新成功',
+    };
+  }
+  async updatePassword(updatePasswordUserDto: UpdatePasswordUserDto) {
+    const { password, id, oldPassword } = updatePasswordUserDto;
+    const user = await this.userEntity.findById(id);
+    if (!user) {
+      throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
+    }
+    if (user.password) {
+      const result = await bcrypt.compare(oldPassword, user.password);
+      if (!result) {
+        throw new HttpException('旧密码不正确', HttpStatus.BAD_REQUEST);
+      }
+    }
+    const saltRounds = 10;
+    updatePasswordUserDto.password = await bcrypt.hash(password, saltRounds);
+    Object.assign(user, updatePasswordUserDto);
+    await user.save();
+    return {
+      data: null,
+      message: '修改成功',
     };
   }
 
