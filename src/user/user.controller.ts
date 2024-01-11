@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
@@ -12,10 +11,10 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ClassValidatorPipe } from '../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
 import { AdminInterceptor } from '../core/interceptors/admin.interceptor';
+import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 
 @Controller('user')
 @UseInterceptors(ResponseInterceptor)
@@ -44,10 +43,10 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Post('updatePassword')
   @UsePipes(ClassValidatorPipe)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  updatePassword(@Body() updatePasswordUserDto: UpdatePasswordUserDto) {
+    return this.userService.updatePassword(updatePasswordUserDto);
   }
 
   @Delete(':id')
