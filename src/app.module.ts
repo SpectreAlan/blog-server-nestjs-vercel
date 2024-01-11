@@ -11,6 +11,7 @@ import { ResponseFilter } from './core/filters/response.filter';
 import { FileModule } from './file/file.module';
 import { AuthModule } from './auth/auth.module';
 import { SettingModule } from './setting/setting.module';
+import { UserModule } from './user/user.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -24,6 +25,7 @@ dotenv.config();
     FileModule,
     AuthModule,
     SettingModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
