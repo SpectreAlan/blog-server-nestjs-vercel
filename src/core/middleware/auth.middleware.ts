@@ -12,7 +12,7 @@ export class AuthMiddleware implements NestMiddleware {
     } catch (error) {
       return res
         .status(401)
-        .json({ message: '回话已过期，请重新登录', code: 401, data: null });
+        .json({ message: '会话已过期，请重新登录', code: 401, data: null });
     }
   }
 }
