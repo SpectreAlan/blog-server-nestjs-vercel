@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePoemDto } from './dto/create-poem.dto';
-import { UpdatePoemDto } from './dto/update-poem.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PoemEntity } from './entities/poem.entity';
@@ -43,36 +42,10 @@ export class PoemService {
     ]);
     return { data: { total, list } };
   }
-
-  async findOne(id: string) {
-    const data = await this.poemEntity.findById(id);
-    return {
-      data,
-    };
-  }
-
-  async findIdsByTitles(titles: string[]) {
-    const poems = await this.poemEntity.find({ title: { $in: titles } }).exec();
-    return poems.map((poem) => poem._id);
-  }
-
-  async update(id: string, updatePoemDto: UpdatePoemDto) {
-    const poem = await this.poemEntity.findById(id);
-    if (!poem) {
-      throw new HttpException('标签不存在', HttpStatus.BAD_REQUEST);
-    }
-    Object.assign(poem, updatePoemDto);
-    const data = await poem.save();
-    return {
-      data,
-      message: '更新成功',
-    };
-  }
-
   async remove(id: string) {
     const data = await this.poemEntity.findByIdAndDelete(id);
     if (!data) {
-      throw new HttpException('标签不存在', HttpStatus.BAD_REQUEST);
+      throw new HttpException('一言不存在', HttpStatus.BAD_REQUEST);
     }
     return {
       data: null,

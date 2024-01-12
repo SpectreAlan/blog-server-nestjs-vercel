@@ -12,19 +12,12 @@ export class VisitorService {
   ) {}
 
   async create(createVisitorDto: CreateVisitorDto) {
-    try {
-      const create = await this.visitorEntity.create(createVisitorDto);
-      await create.save();
-      return {
-        message: '创建成功',
-        data: null,
-      };
-    } catch (error) {
-      if (error.code === 11000) {
-        throw new HttpException('一言已存在', HttpStatus.BAD_REQUEST);
-      }
-      throw error;
-    }
+    const create = await this.visitorEntity.create(createVisitorDto);
+    await create.save();
+    return {
+      message: '创建成功',
+      data: null,
+    };
   }
 
   async findAll({ page, limit, title }) {
@@ -45,7 +38,7 @@ export class VisitorService {
   async remove(id: string) {
     const data = await this.visitorEntity.findByIdAndDelete(id);
     if (!data) {
-      throw new HttpException('标签不存在', HttpStatus.BAD_REQUEST);
+      throw new HttpException('访客不存在', HttpStatus.BAD_REQUEST);
     }
     return {
       data: null,

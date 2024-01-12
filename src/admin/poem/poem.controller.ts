@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -12,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { PoemService } from './poem.service';
 import { CreatePoemDto } from './dto/create-poem.dto';
-import { UpdatePoemDto } from './dto/update-poem.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 
@@ -35,18 +33,6 @@ export class PoemController {
   ) {
     return this.poemService.findAll({ page, limit, title });
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.poemService.findOne(id);
-  }
-
-  @Patch(':id')
-  @UsePipes(ClassValidatorPipe)
-  update(@Param('id') id: string, @Body() updatePoemDto: UpdatePoemDto) {
-    return this.poemService.update(id, updatePoemDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.poemService.remove(id);
