@@ -24,6 +24,9 @@ export class PoemModule implements NestModule {
       .forRoutes({ path: 'poem/:id', method: RequestMethod.ALL });
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: 'poem', method: RequestMethod.ALL });
+      .forRoutes(
+        { path: 'poem', method: RequestMethod.GET },
+        { path: 'poem', method: RequestMethod.DELETE },
+      );
   }
 }
