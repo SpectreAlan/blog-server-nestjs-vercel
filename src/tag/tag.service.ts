@@ -15,10 +15,10 @@ export class TagService {
   async create(createTagDto: CreateTagDto) {
     try {
       const create = await this.tagEntity.create(createTagDto);
-      const data = await create.save();
+      await create.save();
       return {
         message: '创建成功',
-        data,
+        data: null,
       };
     } catch (error) {
       if (error.code === 11000) {
