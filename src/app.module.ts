@@ -4,7 +4,9 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ArticleModule } from './article/article.module';
 import { TagModule } from './tag/tag.module';
+import { PoemModule } from './poem/poem.module';
 import { CategoryModule } from './category/category.module';
+import { CommentModule } from './comment/comment.module';
 import { APP_FILTER } from '@nestjs/core';
 
 import { ResponseFilter } from './core/filters/response.filter';
@@ -26,6 +28,8 @@ dotenv.config();
     AuthModule,
     SettingModule,
     UserModule,
+    PoemModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [
