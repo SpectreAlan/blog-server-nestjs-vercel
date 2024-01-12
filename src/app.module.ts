@@ -7,6 +7,7 @@ import { TagModule } from './tag/tag.module';
 import { PoemModule } from './poem/poem.module';
 import { CategoryModule } from './category/category.module';
 import { CommentModule } from './comment/comment.module';
+import { VisitorModule } from './visitor/visitor.module';
 import { APP_FILTER } from '@nestjs/core';
 
 import { ResponseFilter } from './core/filters/response.filter';
@@ -30,6 +31,7 @@ dotenv.config();
     UserModule,
     PoemModule,
     CommentModule,
+    VisitorModule,
   ],
   controllers: [AppController],
   providers: [
