@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -8,6 +9,7 @@ import { PoemModule } from './admin/poem/poem.module';
 import { CategoryModule } from './admin/category/category.module';
 import { CommentModule } from './admin/comment/comment.module';
 import { VisitorModule } from './admin/visitor/visitor.module';
+import { ScheduleCustomModule } from './admin/schedule/schedule.module';
 import { APP_FILTER } from '@nestjs/core';
 
 import { ResponseFilter } from './core/filters/response.filter';
@@ -22,6 +24,7 @@ dotenv.config();
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.DB_CONNECTION_URL, {}),
+    ScheduleModule.forRoot(),
     ArticleModule,
     TagModule,
     CategoryModule,
@@ -32,6 +35,7 @@ dotenv.config();
     PoemModule,
     CommentModule,
     VisitorModule,
+    ScheduleCustomModule,
   ],
   controllers: [AppController],
   providers: [
