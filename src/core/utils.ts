@@ -1,13 +1,14 @@
 import { Response as ExpressResponse } from 'express';
 import { sign } from 'jsonwebtoken';
+import * as OSS from 'ali-oss';
 
-export const getAliOSSConfig = () => {
-  return {
-    region: process.env.NEXT_PUBLIC_OSS_ALIYUN_REGION,
-    accessKeyId: process.env.NEXT_PUBLIC_OSS_ALIYUN_RKEY,
-    accessKeySecret: process.env.NEXT_PUBLIC_OSS_ALIYUN_SECRET,
-    bucket: process.env.NEXT_PUBLIC_OSS_ALIYUN_BUCKET,
-  };
+export const aliOSS = () => {
+  return new OSS({
+    region: process.env.OSS_ALIYUN_REGION,
+    accessKeyId: process.env.OSS_ALIYUN_KEY,
+    accessKeySecret: process.env.OSS_ALIYUN_SECRET,
+    bucket: process.env.OSS_ALIYUN_BUCKET,
+  });
 };
 
 export const responseLoginResult = (res: ExpressResponse, user) => {
@@ -30,6 +31,6 @@ export const responseLoginResult = (res: ExpressResponse, user) => {
     res.cookie('token', token, { httpOnly: true });
   }
   return res.redirect(
-    'http://localhost:3000/home.html?token=' + encodeURIComponent(encodedUser),
+    process.env.GITHUB_REDIRECT_URL + encodeURIComponent(encodedUser),
   );
 };

@@ -7,12 +7,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as OSS from 'ali-oss';
 import { Express } from 'express';
 import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
 import { UploadFileDto } from './dto/upload-file.dto';
-import { getAliOSSConfig } from '../../core/utils';
+import { aliOSS } from '../../core/utils';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
@@ -28,9 +27,8 @@ export class FileService {
     @UploadedFile() file: Express.Multer.File,
     info: UploadFileDto,
   ) {
-    const client = new OSS(getAliOSSConfig());
-
-    const result = await client.put(
+    const oss = aliOSS();
+    const result = await oss.put(
       `/blog/${info.type}/${new Date().getTime()}.${
         file.originalname.split('/')[1]
       }`,
@@ -66,7 +64,7 @@ export class FileService {
     if (!file) {
       throw new HttpException('文件不存在', HttpStatus.BAD_REQUEST);
     }
-    const oss = new OSS(getAliOSSConfig());
+    const oss = aliOSS();
     const result = await oss.delete(file.url);
 
     if (result.res.status !== 204) {
