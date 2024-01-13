@@ -19,7 +19,7 @@ export class ScheduleService {
     await this.poemService.create({ content, type, author });
   }
 
-  @Cron('0 * * * * *')
+  @Cron('2 2 2 * * *')
   async getBingImage() {
     const bing = await fetch(
       'https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1',
