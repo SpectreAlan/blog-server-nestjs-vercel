@@ -35,6 +35,7 @@ export class ArticleController {
     @Query('status') status: number,
     @Query('category') category: string,
     @Query('tags') tags: string,
+    @Query('keywords') keywords: string,
   ) {
     return this.articleService.findAll({
       page,
@@ -43,6 +44,7 @@ export class ArticleController {
       status,
       category,
       tags,
+      keywords,
     });
   }
 
@@ -56,6 +58,7 @@ export class ArticleController {
   update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
     return this.articleService.update(id, updateArticleDto);
   }
+
   @Delete(':_id')
   remove(@Param('_id') id: string) {
     return this.articleService.remove(id);

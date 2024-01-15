@@ -1,7 +1,6 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ArticleEntity } from './entities/article.entity';
@@ -32,7 +31,7 @@ export class ArticleService {
     }
   }
 
-  async findAll({ page, limit, title, status, category, tags }) {
+  async findAll({ page, limit, title, status, category, tags, keywords }) {
     const query: any = {};
     if (title) {
       query.title = { $regex: new RegExp(title, 'i') };
@@ -45,6 +44,13 @@ export class ArticleService {
     if (tags !== undefined) {
       const tagIds = await this.tagService.findIdsByTitles(tags.split(','));
       query.tags = { $in: tagIds };
+    }
+
+    if (keywords) {
+      query.$or = [
+        { title: { $regex: new RegExp(keywords, 'i') } },
+        { content: { $regex: new RegExp(keywords, 'i') } },
+      ];
     }
 
     if (category !== undefined) {
@@ -83,7 +89,6 @@ export class ArticleService {
       message: '更新成功',
     };
   }
-
   async remove(id: string) {
     const data = await this.articleEntity.findByIdAndDelete(id);
     if (!data) {
@@ -93,5 +98,55 @@ export class ArticleService {
       data: null,
       message: '删除成功',
     };
+  }
+
+  async getArticleCountByCategory() {
+    const res = await this.articleEntity.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'categoryInfo',
+        },
+      },
+      {
+        $unwind: '$categoryInfo',
+      },
+      {
+        $project: {
+          category: '$categoryInfo.title',
+          count: 1,
+        },
+      },
+    ]);
+    let totalArticle = 0;
+    let totalCategory = 0;
+    const categoryList = res.map((item) => {
+      totalArticle += item.count;
+      totalCategory += 1;
+      return {
+        category: item.category,
+        count: item.count,
+      };
+    });
+    return { categoryList, totalArticle, totalCategory };
+  }
+
+  async recentUpdate() {
+    const list = await this.articleEntity
+      .find()
+      .select('_id title description cover updateAt')
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .exec();
+
+    return { data: { list } };
   }
 }

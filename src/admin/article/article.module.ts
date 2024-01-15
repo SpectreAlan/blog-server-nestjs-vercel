@@ -18,6 +18,7 @@ import { AuthMiddleware } from '../../core/middleware/auth.middleware';
     CategoryModule,
     MongooseModule.forFeature([{ name: 'Article', schema: ArticleSchema }]),
   ],
+  exports: [ArticleService],
   controllers: [ArticleController],
   providers: [ArticleService],
 })
