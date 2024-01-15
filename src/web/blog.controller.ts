@@ -38,10 +38,7 @@ export class BlogController {
 
   @Get('category')
   async category() {
-    const data = await this.articleService.getArticleCountByCategory();
-    return {
-      data,
-    };
+    return this.articleService.getArticleCountByCategory();
   }
 
   @Get('recentUpdate')
@@ -51,15 +48,7 @@ export class BlogController {
 
   @Get('tags')
   async tags() {
-    const tags = await this.tagService.findAll({
-      page: 1,
-      limit: 100,
-      title: '',
-    });
-    const tagsList = tags.data.list.map((item) => item.title);
-    return {
-      data: { tagsList, totalTags: tagsList.length },
-    };
+    return this.tagService.findAll({ page: 1, limit: 100, title: '' });
   }
 
   @Get('list')
