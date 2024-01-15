@@ -15,7 +15,7 @@ export class CommentService {
     const create = await this.commentEntity.create(createCommentDto);
     await create.save();
     return {
-      message: '回复成功',
+      message: '操作成功',
       data: null,
     };
   }
@@ -45,6 +45,13 @@ export class CommentService {
     return {
       data: null,
       message: '删除成功',
+    };
+  }
+
+  async comments(article: string) {
+    const data = await this.commentEntity.find({ article });
+    return {
+      data,
     };
   }
 }

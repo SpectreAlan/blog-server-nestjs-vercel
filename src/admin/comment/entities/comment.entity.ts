@@ -3,7 +3,7 @@ import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class CommentEntity {
-  @Prop({ unique: true })
+  @Prop({ required: true })
   content: string;
 
   @Prop({
@@ -13,13 +13,13 @@ export class CommentEntity {
   })
   article: MongooseSchema.Types.ObjectId;
 
-  @Prop()
+  @Prop({ required: true })
   nickName: string;
 
   @Prop()
   email: string;
 
-  @Prop()
+  @Prop({ default: -1 })
   parentId: string;
 }
 
