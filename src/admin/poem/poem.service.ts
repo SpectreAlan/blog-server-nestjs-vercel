@@ -52,4 +52,9 @@ export class PoemService {
       message: '删除成功',
     };
   }
+
+  async getRandomPoems() {
+    const list = await this.poemEntity.aggregate([{ $sample: { size: 10 } }]);
+    return { data: { list } };
+  }
 }
