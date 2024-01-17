@@ -7,6 +7,8 @@ import {
   UsePipes,
   Query,
   UseInterceptors,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ArticleService } from '../admin/article/article.service';
 import { CommentService } from '../admin/comment/comment.service';
@@ -70,22 +72,45 @@ export class BlogController {
     return this.settingService.getNotice();
   }
 
+  @Get('timeLine')
+  async timeLine() {
+    return this.articleService.timeLine();
+  }
+
   @Get('list')
   list(
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
     @Query('keywords') keywords: string,
     @Query('category') category: string,
     @Query('tags') tags: string,
   ) {
     return this.articleService.findAll({
       page,
-      limit,
+      limit: 10,
       keywords,
       category,
       tags,
       title: '',
       status: 1,
+    });
+  }
+
+  @Get('detail')
+  detail(@Query('id') id: string) {
+    console.log(id);
+    return this.articleService.findOne(id);
+  }
+
+  @Get('related')
+  async related(@Query('tags') tags: string) {
+    return this.articleService.findAll({
+      tags,
+      category: '',
+      title: '',
+      status: 1,
+      limit: 10,
+      page: 1,
+      keywords: '',
     });
   }
 }
