@@ -13,9 +13,9 @@ export class SettingService {
   async create(createSettingDto: CreateSettingDto) {
     try {
       const create = await this.settingEntity.create(createSettingDto);
-      const data = await create.save();
+      await create.save();
       return {
-        data,
+        data: null,
         message: '创建成功',
       };
     } catch (error) {
@@ -67,6 +67,29 @@ export class SettingService {
     await this.settingEntity.findByIdAndDelete(id);
     return {
       data: null,
+      message: '删除成功',
+    };
+  }
+
+  async incrementVisitorCount() {
+    const key = 'visitor';
+    const visitor = await this.settingEntity.findOne({ key });
+    if (!visitor) {
+      const create = await this.settingEntity.create({
+        title: '网站访问量',
+        key,
+        value: 1,
+      });
+      await create.save();
+      return {
+        data: 1,
+        message: '创建成功',
+      };
+    }
+    visitor.value = (parseInt(visitor.value) + 1).toString();
+    await visitor.save();
+    return {
+      data: visitor.value,
       message: '删除成功',
     };
   }
