@@ -37,11 +37,11 @@ export class ArticleService {
       query.title = { $regex: new RegExp(title, 'i') };
     }
 
-    if (status !== undefined) {
+    if (status) {
       query.status = status;
     }
 
-    if (tags !== undefined) {
+    if (tags) {
       const tagIds = await this.tagService.findIdsByTitles(tags.split(','));
       query.tags = { $in: tagIds };
     }
@@ -53,7 +53,7 @@ export class ArticleService {
       ];
     }
 
-    if (category !== undefined) {
+    if (category) {
       query.category = category;
     }
     const [articles, total] = await Promise.all([
@@ -71,7 +71,10 @@ export class ArticleService {
   }
 
   async findOne(id: string) {
-    const data = await this.articleEntity.findById(id);
+    const data = await this.articleEntity
+      .findById(id)
+      .populate('tags', 'title')
+      .populate('category', 'title');
     return {
       data,
     };
@@ -142,10 +145,19 @@ export class ArticleService {
   async recentUpdate() {
     const list = await this.articleEntity
       .find()
-      .select('_id title description cover updateAt')
+      .select('_id title description cover updatedAt')
       .sort({ createdAt: -1 })
       .limit(10)
       .exec();
+
+    return { data: { list } };
+  }
+
+  async timeLine() {
+    const list = await this.articleEntity
+      .find()
+      .select('_id title cover createdAt updatedAt')
+      .sort({ createdAt: -1 });
 
     return { data: { list } };
   }
