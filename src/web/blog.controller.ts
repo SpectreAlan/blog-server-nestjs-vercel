@@ -65,6 +65,11 @@ export class BlogController {
     return this.settingService.incrementVisitorCount();
   }
 
+  @Get('notice')
+  async notice() {
+    return this.settingService.getNotice();
+  }
+
   @Get('list')
   list(
     @Query('page') page: number = 1,
