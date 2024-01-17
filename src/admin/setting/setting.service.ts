@@ -83,14 +83,14 @@ export class SettingService {
       await create.save();
       return {
         data: 1,
-        message: '创建成功',
+        message: 'success',
       };
     }
     visitor.value = (parseInt(visitor.value) + 1).toString();
     await visitor.save();
     return {
-      data: visitor.value,
-      message: '删除成功',
+      data: parseInt(visitor.value),
+      message: 'success',
     };
   }
 }
