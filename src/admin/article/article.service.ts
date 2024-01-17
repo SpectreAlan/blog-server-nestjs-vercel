@@ -136,7 +136,7 @@ export class ArticleService {
         count: item.count,
       };
     });
-    return { categoryList, totalArticle, totalCategory };
+    return { data: { categoryList, totalArticle, totalCategory } };
   }
 
   async recentUpdate() {
