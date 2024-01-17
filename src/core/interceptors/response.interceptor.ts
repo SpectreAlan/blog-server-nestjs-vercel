@@ -11,8 +11,8 @@ export const formatResponseDate = (time: Date): string => {
   return time.toISOString().replace('T', ' ').substring(0, 19);
 };
 export const formatResponseData = (data: any): unknown => {
-  if (!data) {
-    return null;
+  if (!data || !data?._id) {
+    return data;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _id, __v = '', ...res } = data;
