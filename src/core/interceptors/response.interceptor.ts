@@ -18,7 +18,7 @@ export const formatResponseData = (data: any): unknown => {
   const { _id, __v = '', ...res } = data;
   res.id = _id;
   const { updatedAt = '', createdAt = '', ...other } = res;
-  if (!updatedAt || !createdAt) {
+  if (!createdAt || !updatedAt) {
     return res;
   }
   return {
@@ -38,7 +38,7 @@ export class ResponseInterceptor implements NestInterceptor {
             formatResponseData(item?.toObject?.() ?? item),
           );
         } else {
-          data = formatResponseData(data);
+          data = formatResponseData(data?.toObject?.() ?? data);
         }
         return {
           code: 0,
