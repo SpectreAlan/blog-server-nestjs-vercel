@@ -93,4 +93,26 @@ export class SettingService {
       message: 'success',
     };
   }
+
+  async getNotice() {
+    const key = 'notice';
+    const notice = await this.settingEntity.findOne({ key });
+    if (!notice) {
+      const msg = '欢迎访问小站~';
+      const create = await this.settingEntity.create({
+        title: '网站公告',
+        key,
+        value: msg,
+      });
+      await create.save();
+      return {
+        data: msg,
+        message: 'success',
+      };
+    }
+    return {
+      data: notice.toObject().value,
+      message: 'success',
+    };
+  }
 }
