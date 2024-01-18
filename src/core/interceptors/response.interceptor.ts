@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as crypto from 'crypto';
+import * as process from 'process';
 
 export const formatResponseDate = (time: Date): string => {
   return time.toISOString().replace('T', ' ').substring(0, 19);
@@ -40,10 +42,16 @@ export class ResponseInterceptor implements NestInterceptor {
         } else {
           data = formatResponseData(data?.toObject?.() ?? data);
         }
+        const cipher = crypto.createCipher(
+          process.env.CRYPTO_ALGORITHM,
+          process.env.CRYPTO_SECRET_KEY,
+        );
+        let encrypted = cipher.update(JSON.stringify(data), 'utf-8', 'hex');
+        encrypted += cipher.final('hex');
         return {
           code: 0,
           message,
-          data,
+          data: encrypted,
         };
       }),
     );
