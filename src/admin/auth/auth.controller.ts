@@ -6,6 +6,7 @@ import {
   Post,
   UsePipes,
   Body,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UseGuards, Inject } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { UserService } from '../user/user.service';
 import { responseLoginResult } from '../../core/utils';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { LoginUserDto } from '../user/dto/login-user.dto';
+import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 
 @Controller('auth')
 export class AuthController {
@@ -35,8 +37,8 @@ export class AuthController {
 
   @Post('login')
   @UsePipes(ClassValidatorPipe)
-  async login(@Body() loginUserDto: LoginUserDto, @Res() res: ExpressResponse) {
-    const user = await this.userService.login(loginUserDto);
-    responseLoginResult(res, user);
+  @UseInterceptors(ResponseInterceptor)
+  async login(@Body() loginUserDto: LoginUserDto) {
+    return this.userService.login(loginUserDto);
   }
 }
