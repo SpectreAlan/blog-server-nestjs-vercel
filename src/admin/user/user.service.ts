@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
+import { setToken } from '../../core/utils';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,7 @@ export class UserService {
     @InjectModel('User')
     private readonly userEntity: Model<UserEntity>,
   ) {}
+
   async create(createUserDto: CreateUserDto) {
     try {
       const create = await this.userEntity.create(createUserDto);
@@ -34,7 +36,20 @@ export class UserService {
     const { account, password } = loginUserDto;
     const user = await this.userEntity.findOne({ account });
     const result = await bcrypt.compare(password, user?.password);
-    return result ? user.toObject() : null;
+    if (result) {
+      const { _id, role, avatar, account, nickName, email, status } =
+        user.toObject();
+      if (status) {
+        const data = { _id, role, avatar, account, nickName, email };
+        const token = setToken(role, account);
+        return {
+          data: { ...data, token },
+          message: 'success',
+        };
+      }
+      return { data: null, code: 400, message: '用户已禁用，请联系管理系' };
+    }
+    return { data: null, code: 400, message: '用户名/密码不正确' };
   }
 
   async findAll({ page, limit, account }) {
@@ -72,6 +87,7 @@ export class UserService {
 
     return user.toObject();
   }
+
   async findOne(id: number) {
     const data = await this.userEntity.findById(id);
     return {
@@ -91,6 +107,7 @@ export class UserService {
       message: '更新成功',
     };
   }
+
   async updatePassword(updatePasswordUserDto: UpdatePasswordUserDto) {
     const { password, id, oldPassword } = updatePasswordUserDto;
     const user = await this.userEntity.findById(id);
