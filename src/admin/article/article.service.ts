@@ -59,7 +59,7 @@ export class ArticleService {
     const [articles, total] = await Promise.all([
       this.articleEntity
         .find(query)
-        .select('_id title description category cover createdAt')
+        .select('_id title description category cover createdAt updatedAt')
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('category', 'title')
