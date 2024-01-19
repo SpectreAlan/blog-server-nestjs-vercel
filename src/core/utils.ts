@@ -12,7 +12,7 @@ export const aliOSS = () => {
 };
 
 export const responseLoginResult = (res: ExpressResponse, user) => {
-  const { status, nickName, role, avatar, account, _id: id, password } = user;
+  const { status, nickName, role, avatar, _id: id, password, account } = user;
   let encodedUser: string = 'null';
   if (status) {
     encodedUser = Buffer.from(
@@ -25,12 +25,16 @@ export const responseLoginResult = (res: ExpressResponse, user) => {
         hasPassword: !!password,
       }),
     ).toString('base64');
-    const token = sign({ account, role }, process.env.SECRET_KEY, {
-      expiresIn: '1h',
-    });
+    const token = setToken(role, account);
     res.cookie('token', token, { httpOnly: true });
   }
   return res.redirect(
     process.env.GITHUB_REDIRECT_URL + encodeURIComponent(encodedUser),
   );
+};
+
+export const setToken = (role: string, account: string) => {
+  return sign({ account, role }, process.env.SECRET_KEY, {
+    expiresIn: '1h',
+  });
 };
