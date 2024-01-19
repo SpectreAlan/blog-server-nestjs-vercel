@@ -29,8 +29,8 @@ export class ArticleController {
 
   @Get()
   findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('current') page: number = 1,
+    @Query('pageSize') limit: number = 10,
     @Query('title') title: string,
     @Query('status') status: number,
     @Query('category') category: string,

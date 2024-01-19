@@ -79,7 +79,7 @@ export class BlogController {
 
   @Get('list')
   list(
-    @Query('page') page: number = 1,
+    @Query('current') page: number = 1,
     @Query('keywords') keywords: string,
     @Query('category') category: string,
     @Query('tags') tags: string,

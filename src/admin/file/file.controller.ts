@@ -30,7 +30,10 @@ export class FileController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+  findAll(
+    @Query('current') page: number = 1,
+    @Query('pageSize') limit: number = 10,
+  ) {
     return this.fileService.findAll({ page, limit });
   }
 
