@@ -60,6 +60,7 @@ export class UserService {
     const [list, total] = await Promise.all([
       this.userEntity
         .find(query)
+        .sort({ createdAt: -1 })
         .select(
           '_id account nickName avatar email role status createdAt updatedAt',
         )

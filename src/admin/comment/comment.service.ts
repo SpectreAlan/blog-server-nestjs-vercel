@@ -28,6 +28,7 @@ export class CommentService {
     const [list, total] = await Promise.all([
       this.commentEntity
         .find(query)
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('article', 'title')

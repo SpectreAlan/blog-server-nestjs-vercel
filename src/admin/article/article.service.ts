@@ -59,6 +59,7 @@ export class ArticleService {
     const [articles, total] = await Promise.all([
       this.articleEntity
         .find(query)
+        .sort({ createdAt: -1 })
         .select('_id title description category cover createdAt updatedAt')
         .skip((page - 1) * limit)
         .limit(limit)
@@ -86,9 +87,9 @@ export class ArticleService {
       throw new HttpException('文章不存在', HttpStatus.BAD_REQUEST);
     }
     Object.assign(article, updateArticleDto);
-    const data = await article.save();
+    await article.save();
     return {
-      data,
+      data: null,
       message: '更新成功',
     };
   }

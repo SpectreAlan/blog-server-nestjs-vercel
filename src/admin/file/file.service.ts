@@ -50,6 +50,7 @@ export class FileService {
     const [list, total] = await Promise.all([
       this.fileEntity
         .find()
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .exec(),

@@ -29,6 +29,7 @@ export class SettingService {
   async findAll() {
     const list = await this.settingEntity
       .find()
+      .sort({ createdAt: -1 })
       .select('title key type _id')
       .exec();
     return { list };

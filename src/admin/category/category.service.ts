@@ -39,6 +39,7 @@ export class CategoryService {
     const [categories, total] = await Promise.all([
       this.categoryEntity
         .find(query)
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .exec(),

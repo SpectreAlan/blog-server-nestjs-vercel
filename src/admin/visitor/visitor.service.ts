@@ -28,6 +28,7 @@ export class VisitorService {
     const [list, total] = await Promise.all([
       this.visitorEntity
         .find(query)
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .exec(),

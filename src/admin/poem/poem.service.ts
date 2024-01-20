@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePoemDto } from './dto/create-poem.dto';
+import { UpdatePoemDto } from './dto/update-poem.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { PoemEntity } from './entities/poem.entity';
@@ -27,10 +28,29 @@ export class PoemService {
     }
   }
 
-  async findAll({ page, limit, title, author, type }) {
+  async findOne(id: string) {
+    const data = await this.poemEntity.findById(id);
+    return {
+      data,
+    };
+  }
+
+  async update(id: string, updatePoemDto: UpdatePoemDto) {
+    const poem = await this.poemEntity.findById(id);
+    if (!poem) {
+      throw new HttpException('一言不存在', HttpStatus.BAD_REQUEST);
+    }
+    Object.assign(poem, updatePoemDto);
+    await poem.save();
+    return {
+      data: null,
+      message: '更新成功',
+    };
+  }
+  async findAll({ page, limit, content, author, type }) {
     const query: any = {};
-    if (title) {
-      query.title = { $regex: new RegExp(title, 'i') };
+    if (content) {
+      query.content = { $regex: new RegExp(content, 'i') };
     }
 
     if (author) {
@@ -44,6 +64,7 @@ export class PoemService {
     const [list, total] = await Promise.all([
       this.poemEntity
         .find(query)
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .exec(),
