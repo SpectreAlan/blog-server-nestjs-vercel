@@ -19,7 +19,7 @@ export class ClassValidatorPipe extends ValidationPipe {
     return errors
       .map((error) =>
         typeof error.constraints === 'object'
-          ? error.constraints?.unknownValue || '参数格式不正确'
+          ? Object.values(error.constraints) || '参数格式不正确'
           : error.constraints,
       )
       .join(', ');
