@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { CategoryEntity } from './entities/category.entity';
 @Injectable()
 export class CategoryService {
@@ -68,7 +68,7 @@ export class CategoryService {
     };
   }
 
-  async remove(ids: string[]) {
+  async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.categoryEntity.deleteMany({
       _id: { $in: ids },
     });

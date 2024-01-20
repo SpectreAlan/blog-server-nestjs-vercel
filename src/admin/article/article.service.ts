@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { ArticleEntity } from './entities/article.entity';
 import { TagService } from '../tag/tag.service';
 
@@ -92,7 +92,7 @@ export class ArticleService {
       message: '更新成功',
     };
   }
-  async remove(ids: string[]) {
+  async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.articleEntity.deleteMany({
       _id: { $in: ids },
     });

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { TagEntity } from './entities/tag.entity';
 
 @Injectable()
@@ -69,7 +69,7 @@ export class TagService {
     };
   }
 
-  async remove(ids: string[]) {
+  async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.tagEntity.deleteMany({
       _id: { $in: ids },
     });

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { CommentEntity } from './entities/comment.entity';
 
 @Injectable()
@@ -37,7 +37,7 @@ export class CommentService {
     return { data: { total, list } };
   }
 
-  async remove(ids: string[]) {
+  async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.commentEntity.deleteMany({
       _id: { $in: ids },
     });

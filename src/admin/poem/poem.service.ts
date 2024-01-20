@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePoemDto } from './dto/create-poem.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { PoemEntity } from './entities/poem.entity';
-import { DeleteItemsDto } from './dto/delete-common.dto';
 
 @Injectable()
 export class PoemService {
@@ -53,7 +52,7 @@ export class PoemService {
     return { data: { total, list } };
   }
 
-  async remove(ids: string[]) {
+  async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.poemEntity.deleteMany({
       _id: { $in: ids },
     });
