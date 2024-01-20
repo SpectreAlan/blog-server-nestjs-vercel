@@ -15,6 +15,7 @@ import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { DeleteItemsDto } from '../poem/dto/delete-common.dto';
 
 @Controller('tag')
 @UseInterceptors(ResponseInterceptor)
@@ -48,7 +49,8 @@ export class TagController {
   }
 
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.tagService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.tagService.remove(deleteItemsDto.ids);
   }
 }

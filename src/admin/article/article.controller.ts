@@ -15,6 +15,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { DeleteItemsDto } from '../poem/dto/delete-common.dto';
 
 @Controller('article')
 @UseInterceptors(ResponseInterceptor)
@@ -60,7 +61,8 @@ export class ArticleController {
   }
 
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.articleService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.articleService.remove(deleteItemsDto.ids);
   }
 }

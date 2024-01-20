@@ -13,6 +13,7 @@ import { VisitorService } from './visitor.service';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { DeleteItemsDto } from '../poem/dto/delete-common.dto';
 
 @Controller('visitor')
 @UseInterceptors(ResponseInterceptor)
@@ -35,7 +36,8 @@ export class VisitorController {
   }
 
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.visitorService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.visitorService.remove(deleteItemsDto.ids);
   }
 }

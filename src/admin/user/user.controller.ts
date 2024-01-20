@@ -15,6 +15,7 @@ import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 import { AdminInterceptor } from '../../core/interceptors/admin.interceptor';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
+import { DeleteItemsDto } from '../poem/dto/delete-common.dto';
 
 @Controller('user')
 @UseInterceptors(ResponseInterceptor)
@@ -50,7 +51,8 @@ export class UserController {
   }
 
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.userService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.userService.remove(deleteItemsDto.ids);
   }
 }

@@ -15,6 +15,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { DeleteItemsDto } from '../poem/dto/delete-common.dto';
 
 @Controller('category')
 @UseInterceptors(ResponseInterceptor)
@@ -55,7 +56,8 @@ export class CategoryController {
   }
 
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.categoryService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.categoryService.remove(deleteItemsDto.ids);
   }
 }

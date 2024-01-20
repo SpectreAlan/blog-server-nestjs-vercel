@@ -12,6 +12,7 @@ import { PoemService } from './poem.service';
 import { CreatePoemDto } from './dto/create-poem.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { DeleteItemsDto } from './dto/delete-common.dto';
 
 @Controller('poem')
 @UseInterceptors(ResponseInterceptor)
@@ -35,7 +36,8 @@ export class PoemController {
     return this.poemService.findAll({ page, limit, title, author, type });
   }
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.poemService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.poemService.remove(deleteItemsDto.ids);
   }
 }

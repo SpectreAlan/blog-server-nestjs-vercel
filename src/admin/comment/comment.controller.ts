@@ -13,6 +13,7 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { DeleteItemsDto } from '../poem/dto/delete-common.dto';
 
 @Controller('comment')
 @UseInterceptors(ResponseInterceptor)
@@ -35,7 +36,8 @@ export class CommentController {
   }
 
   @Delete()
-  remove(@Body() ids: string[]) {
-    return this.commentService.remove(ids);
+  @UsePipes(ClassValidatorPipe)
+  remove(@Body() deleteItemsDto: DeleteItemsDto) {
+    return this.commentService.remove(deleteItemsDto.ids);
   }
 }
