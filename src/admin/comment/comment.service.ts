@@ -37,9 +37,9 @@ export class CommentService {
     return { data: { total, list } };
   }
 
-  async remove(id: string) {
+  async remove(ids: string[]) {
     const data = await this.commentEntity.deleteMany({
-      _id: { $in: id.split(',') },
+      _id: { $in: ids },
     });
     if (data.deletedCount === 0) {
       throw new HttpException('评论不存在', HttpStatus.BAD_REQUEST);

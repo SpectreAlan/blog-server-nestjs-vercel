@@ -68,9 +68,9 @@ export class CategoryService {
     };
   }
 
-  async remove(id: string) {
+  async remove(ids: string[]) {
     const data = await this.categoryEntity.deleteMany({
-      _id: { $in: id.split(',') },
+      _id: { $in: ids },
     });
     if (data.deletedCount === 0) {
       throw new HttpException('分类不存在', HttpStatus.BAD_REQUEST);

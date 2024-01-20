@@ -92,9 +92,9 @@ export class ArticleService {
       message: '更新成功',
     };
   }
-  async remove(id: string) {
+  async remove(ids: string[]) {
     const data = await this.articleEntity.deleteMany({
-      _id: { $in: id.split(',') },
+      _id: { $in: ids },
     });
     if (data.deletedCount === 0) {
       throw new HttpException('文章不存在', HttpStatus.BAD_REQUEST);

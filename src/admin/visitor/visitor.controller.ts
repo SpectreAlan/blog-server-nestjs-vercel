@@ -34,8 +34,8 @@ export class VisitorController {
     return this.visitorService.findAll({ page, limit, title });
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.visitorService.remove(id);
+  @Delete()
+  remove(@Body() ids: string[]) {
+    return this.visitorService.remove(ids);
   }
 }

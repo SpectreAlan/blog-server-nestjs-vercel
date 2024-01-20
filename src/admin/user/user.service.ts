@@ -130,9 +130,9 @@ export class UserService {
     };
   }
 
-  async remove(id: string) {
+  async remove(ids: string[]) {
     const data = await this.userEntity.deleteMany({
-      _id: { $in: id.split(',') },
+      _id: { $in: ids },
     });
     if (data.deletedCount === 0) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);

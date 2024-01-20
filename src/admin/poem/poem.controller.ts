@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Param,
   Delete,
   Query,
   UsePipes,
@@ -31,11 +30,12 @@ export class PoemController {
     @Query('pageSize') limit: number = 10,
     @Query('title') title: string,
     @Query('author') author: string,
+    @Query('type') type: string,
   ) {
-    return this.poemService.findAll({ page, limit, title, author });
+    return this.poemService.findAll({ page, limit, title, author, type });
   }
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.poemService.remove(id);
+  @Delete()
+  remove(@Body() ids: string[]) {
+    return this.poemService.remove(ids);
   }
 }

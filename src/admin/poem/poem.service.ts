@@ -27,15 +27,20 @@ export class PoemService {
     }
   }
 
-  async findAll({ page, limit, title, author }) {
+  async findAll({ page, limit, title, author, type }) {
     const query: any = {};
     if (title) {
       query.title = { $regex: new RegExp(title, 'i') };
     }
 
     if (author) {
-      query.title = { $regex: new RegExp(author, 'i') };
+      query.author = { $regex: new RegExp(author, 'i') };
     }
+
+    if (type) {
+      query.type = { $regex: new RegExp(type, 'i') };
+    }
+
     const [list, total] = await Promise.all([
       this.poemEntity
         .find(query)
@@ -46,9 +51,10 @@ export class PoemService {
     ]);
     return { data: { total, list } };
   }
-  async remove(id: string) {
+
+  async remove(ids: string[]) {
     const data = await this.poemEntity.deleteMany({
-      _id: { $in: id.split(',') },
+      _id: { $in: ids },
     });
     if (data.deletedCount === 0) {
       throw new HttpException('一言不存在', HttpStatus.BAD_REQUEST);

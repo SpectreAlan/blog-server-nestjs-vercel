@@ -34,8 +34,8 @@ export class CommentController {
     return this.commentService.findAll({ page, limit, title });
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(id);
+  @Delete()
+  remove(@Body() ids: string[]) {
+    return this.commentService.remove(ids);
   }
 }
