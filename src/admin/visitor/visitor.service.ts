@@ -36,8 +36,10 @@ export class VisitorService {
     return { data: { total, list } };
   }
   async remove(id: string) {
-    const data = await this.visitorEntity.findByIdAndDelete(id);
-    if (!data) {
+    const data = await this.visitorEntity.deleteMany({
+      _id: { $in: id.split(',') },
+    });
+    if (data.deletedCount === 0) {
       throw new HttpException('访客不存在', HttpStatus.BAD_REQUEST);
     }
     return {

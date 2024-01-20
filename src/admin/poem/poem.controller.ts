@@ -30,8 +30,9 @@ export class PoemController {
     @Query('current') page: number = 1,
     @Query('pageSize') limit: number = 10,
     @Query('title') title: string,
+    @Query('author') author: string,
   ) {
-    return this.poemService.findAll({ page, limit, title });
+    return this.poemService.findAll({ page, limit, title, author });
   }
   @Delete(':id')
   remove(@Param('id') id: string) {

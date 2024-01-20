@@ -70,8 +70,10 @@ export class TagService {
   }
 
   async remove(id: string) {
-    const data = await this.tagEntity.findByIdAndDelete(id);
-    if (!data) {
+    const data = await this.tagEntity.deleteMany({
+      _id: { $in: id.split(',') },
+    });
+    if (data.deletedCount === 0) {
       throw new HttpException('标签不存在', HttpStatus.BAD_REQUEST);
     }
     return {

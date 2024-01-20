@@ -27,10 +27,14 @@ export class PoemService {
     }
   }
 
-  async findAll({ page, limit, title }) {
+  async findAll({ page, limit, title, author }) {
     const query: any = {};
     if (title) {
       query.title = { $regex: new RegExp(title, 'i') };
+    }
+
+    if (author) {
+      query.title = { $regex: new RegExp(author, 'i') };
     }
     const [list, total] = await Promise.all([
       this.poemEntity
@@ -43,8 +47,10 @@ export class PoemService {
     return { data: { total, list } };
   }
   async remove(id: string) {
-    const data = await this.poemEntity.findByIdAndDelete(id);
-    if (!data) {
+    const data = await this.poemEntity.deleteMany({
+      _id: { $in: id.split(',') },
+    });
+    if (data.deletedCount === 0) {
       throw new HttpException('一言不存在', HttpStatus.BAD_REQUEST);
     }
     return {

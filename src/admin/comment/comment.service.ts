@@ -38,8 +38,10 @@ export class CommentService {
   }
 
   async remove(id: string) {
-    const data = await this.commentEntity.findByIdAndDelete(id);
-    if (!data) {
+    const data = await this.commentEntity.deleteMany({
+      _id: { $in: id.split(',') },
+    });
+    if (data.deletedCount === 0) {
       throw new HttpException('评论不存在', HttpStatus.BAD_REQUEST);
     }
     return {
