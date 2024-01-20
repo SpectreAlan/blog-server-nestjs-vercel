@@ -16,6 +16,12 @@ export class ClassValidatorPipe extends ValidationPipe {
   }
 
   private handleError(errors: ValidationError[]): string {
-    return errors.map((error) => error.constraints).join(', ');
+    return errors
+      .map((error) =>
+        typeof error.constraints === 'object'
+          ? error.constraints?.unknownValue || '参数格式不正确'
+          : error.constraints,
+      )
+      .join(', ');
   }
 }
