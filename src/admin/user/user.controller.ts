@@ -8,9 +8,11 @@ import {
   UseInterceptors,
   UsePipes,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 import { AdminInterceptor } from '../../core/interceptors/admin.interceptor';
@@ -29,6 +31,11 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Patch(':id')
+  @UsePipes(ClassValidatorPipe)
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
+  }
   @Get()
   @UseInterceptors(AdminInterceptor)
   findAll(
@@ -41,7 +48,7 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne(id);
   }
 
   @Post('updatePassword')

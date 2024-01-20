@@ -89,7 +89,7 @@ export class UserService {
     return user.toObject();
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const data = await this.userEntity.findById(id);
     return {
       data,
