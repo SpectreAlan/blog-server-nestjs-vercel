@@ -34,8 +34,8 @@ export class PoemController {
     return this.poemService.update(id, updatePoemDto);
   }
 
-  @Get(':_id')
-  findOne(@Param('_id') id: string) {
+  @Get(':id')
+  findOne(@Param('id') id: string) {
     return this.poemService.findOne(id);
   }
   @Get()
