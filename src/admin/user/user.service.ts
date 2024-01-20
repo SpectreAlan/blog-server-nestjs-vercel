@@ -52,10 +52,19 @@ export class UserService {
     return { data: null, code: 400, message: '用户名/密码不正确' };
   }
 
-  async findAll({ page, limit, account }) {
+  async findAll({ page, limit, account, status, role, email }) {
     const query: any = {};
     if (account) {
       query.account = { $regex: new RegExp(account, 'i') };
+    }
+    if (status) {
+      query.status = status;
+    }
+    if (role) {
+      query.role = { $regex: new RegExp(role, 'i') };
+    }
+    if (email) {
+      query.email = { $regex: new RegExp(email, 'i') };
     }
     const [list, total] = await Promise.all([
       this.userEntity

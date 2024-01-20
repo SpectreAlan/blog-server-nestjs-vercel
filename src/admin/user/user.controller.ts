@@ -42,8 +42,18 @@ export class UserController {
     @Query('current') page: number = 1,
     @Query('pageSize') limit: number = 10,
     @Query('account') account: string,
+    @Query('status') status: number,
+    @Query('role') role: string,
+    @Query('email') email: string,
   ) {
-    return this.userService.findAll({ page, limit, account });
+    return this.userService.findAll({
+      page,
+      limit,
+      account,
+      status,
+      role,
+      email,
+    });
   }
 
   @Get(':id')
