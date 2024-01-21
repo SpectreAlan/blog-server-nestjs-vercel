@@ -30,9 +30,19 @@ export class VisitorController {
   findAll(
     @Query('current') page: number = 1,
     @Query('pageSize') limit: number = 10,
-    @Query('title') title: string,
+    @Query('ip') ip: string,
+    @Query('country') country: string,
+    @Query('province') province: string,
+    @Query('city') city: string,
   ) {
-    return this.visitorService.findAll({ page, limit, title });
+    return this.visitorService.findAll({
+      page,
+      limit,
+      ip,
+      city,
+      province,
+      country,
+    });
   }
 
   @Delete()

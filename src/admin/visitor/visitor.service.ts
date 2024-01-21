@@ -20,10 +20,19 @@ export class VisitorService {
     };
   }
 
-  async findAll({ page, limit, title }) {
+  async findAll({ page, limit, ip, country, city, province }) {
     const query: any = {};
-    if (title) {
-      query.title = { $regex: new RegExp(title, 'i') };
+    if (ip) {
+      query.ip = { $regex: new RegExp(ip, 'i') };
+    }
+    if (country) {
+      query.country = { $regex: new RegExp(country, 'i') };
+    }
+    if (city) {
+      query.city = { $regex: new RegExp(city, 'i') };
+    }
+    if (province) {
+      query.province = { $regex: new RegExp(province, 'i') };
     }
     const [list, total] = await Promise.all([
       this.visitorEntity
@@ -36,6 +45,7 @@ export class VisitorService {
     ]);
     return { data: { total, list } };
   }
+
   async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.visitorEntity.deleteMany({
       _id: { $in: ids },
