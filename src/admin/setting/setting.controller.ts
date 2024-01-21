@@ -8,6 +8,7 @@ import {
   Delete,
   UsePipes,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { SettingService } from './setting.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
@@ -27,8 +28,13 @@ export class SettingController {
   }
 
   @Get()
-  findAll() {
-    return this.settingService.findAll();
+  findAll(
+    @Query('current') page: number = 1,
+    @Query('pageSize') limit: number = 10,
+    @Query('title') title: string,
+    @Query('key') key: string,
+  ) {
+    return this.settingService.findAll({ page, limit, title, key });
   }
 
   @Get(':_id')
@@ -41,8 +47,8 @@ export class SettingController {
     return this.settingService.update(id, updateSettingDto);
   }
 
-  @Delete(':_id')
-  remove(@Param('_id') id: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.settingService.remove(id);
   }
 }

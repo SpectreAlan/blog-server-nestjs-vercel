@@ -4,12 +4,14 @@ import { UpdateSettingDto } from './dto/update-setting.dto';
 import { SettingEntity } from './entities/setting.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+
 @Injectable()
 export class SettingService {
   constructor(
     @InjectModel('Setting')
     private readonly settingEntity: Model<SettingEntity>,
   ) {}
+
   async create(createSettingDto: CreateSettingDto) {
     try {
       const create = await this.settingEntity.create(createSettingDto);
@@ -26,13 +28,25 @@ export class SettingService {
     }
   }
 
-  async findAll() {
-    const list = await this.settingEntity
-      .find()
-      .sort({ createdAt: -1 })
-      .select('title key type _id')
-      .exec();
-    return { list };
+  async findAll({ limit, page, title, key }) {
+    const query: any = {};
+    if (title) {
+      query.title = { $regex: new RegExp(title, 'i') };
+    }
+    if (key) {
+      query.key = { $regex: new RegExp(key, 'i') };
+    }
+    const [list, total] = await Promise.all([
+      this.settingEntity
+        .find(query)
+        .sort({ createdAt: -1 })
+        .select('title key type _id createdAt updatedAt')
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec(),
+      this.settingEntity.countDocuments(query).exec(),
+    ]);
+    return { data: { total, list } };
   }
 
   async findOne(id: string) {

@@ -97,7 +97,6 @@ export class BlogController {
 
   @Get('detail')
   detail(@Query('id') id: string) {
-    console.log(id);
     return this.articleService.findOne(id);
   }
 
