@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { Express } from 'express';
 import { FileService } from './file.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 
@@ -20,13 +19,9 @@ import { ResponseInterceptor } from '../../core/interceptors/response.intercepto
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() uploadFileDto: UploadFileDto,
-  ) {
-    return this.fileService.uploadFile(file, uploadFileDto);
+  @Get('signature')
+  async signature() {
+    return this.fileService.signature();
   }
 
   @Get()

@@ -1,18 +1,9 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
-import { UploadFileDto } from './dto/upload-file.dto';
-import { aliOSS } from '../../core/utils';
+import * as Client from 'ali-oss';
 import { InjectModel } from '@nestjs/mongoose';
+import { getUnix } from '../../core/utils';
 
 @Injectable()
 export class FileService {
@@ -20,29 +11,35 @@ export class FileService {
     @InjectModel('File')
     private readonly fileEntity: Model<FileEntity>,
   ) {}
+  async signature() {
+    const expiration = getUnix(5);
+    const config = {
+      accessKeyId: process.env.OSS_ALIYUN_KEY,
+      accessKeySecret: process.env.OSS_ALIYUN_SECRET,
+      dir: process.env.OSS_ALIYUN_DIR,
+      bucket: process.env.OSS_ALIYUN_BUCKET,
+    };
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    info: UploadFileDto,
-  ) {
-    const oss = aliOSS();
-    const result = await oss.put(
-      `/blog/${info.type}/${new Date().getTime()}.${
-        file.originalname.split('/')[1]
-      }`,
-      file.buffer,
-    );
+    const client = new Client(config);
 
-    const create = await this.fileEntity.create({
-      url: result.url,
-      description: info.description,
-    });
-    const data = await create.save();
+    const policy = {
+      expiration: expiration,
+      conditions: [['content-length-range', 0, 10485760000]],
+    };
+    const formData = await client.calculatePostSignature(policy);
+    const location = await client.getBucketLocation();
+    const host = `http://${config.bucket}.${location.location}.aliyuncs.com`;
+
     return {
-      data,
-      message: '上传成功',
+      data: {
+        expire: expiration,
+        policy: formData.policy,
+        signature: formData.Signature,
+        accessId: formData.OSSAccessKeyId,
+        host,
+        dir: config.dir,
+      },
+      message: 'success',
     };
   }
 
@@ -65,12 +62,12 @@ export class FileService {
     if (!file) {
       throw new HttpException('文件不存在', HttpStatus.BAD_REQUEST);
     }
-    const oss = aliOSS();
-    const result = await oss.delete(file.url);
-
-    if (result.res.status !== 204) {
-      throw new HttpException('删除失败', HttpStatus.BAD_REQUEST);
-    }
+    // const oss = aliOSS();
+    // const result = await oss.delete(file.url);
+    //
+    // if (result.res.status !== 204) {
+    //   throw new HttpException('删除失败', HttpStatus.BAD_REQUEST);
+    // }
     await this.fileEntity.findByIdAndDelete(id);
     return {
       data: null,

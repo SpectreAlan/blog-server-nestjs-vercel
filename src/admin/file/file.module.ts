@@ -21,7 +21,7 @@ export class FileModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ValidateIdMiddleware)
-      .forRoutes({ path: 'file/:id', method: RequestMethod.ALL });
+      .forRoutes({ path: 'file/:id', method: RequestMethod.DELETE });
     consumer
       .apply(AuthMiddleware)
       .forRoutes({ path: 'file', method: RequestMethod.ALL });
