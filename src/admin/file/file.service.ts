@@ -3,7 +3,6 @@ import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
 import * as Client from 'ali-oss';
 import { InjectModel } from '@nestjs/mongoose';
-import { getUnix } from '../../core/utils';
 
 @Injectable()
 export class FileService {
@@ -11,8 +10,11 @@ export class FileService {
     @InjectModel('File')
     private readonly fileEntity: Model<FileEntity>,
   ) {}
+
   async signature() {
-    const expiration = getUnix(5);
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + 2);
+    const expiration = date.toISOString();
     const config = {
       accessKeyId: process.env.OSS_ALIYUN_KEY,
       accessKeySecret: process.env.OSS_ALIYUN_SECRET,
@@ -23,7 +25,7 @@ export class FileService {
     const client = new Client(config);
 
     const policy = {
-      expiration: expiration,
+      expiration,
       conditions: [['content-length-range', 0, 10485760000]],
     };
     const formData = await client.calculatePostSignature(policy);
