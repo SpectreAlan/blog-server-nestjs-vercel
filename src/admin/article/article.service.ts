@@ -60,10 +60,11 @@ export class ArticleService {
       this.articleEntity
         .find(query)
         .sort({ createdAt: -1 })
-        .select('_id title description category cover createdAt updatedAt')
+        .select('_id title category cover tags scan createdAt updatedAt')
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('category', 'title')
+        .populate('tags', 'title')
         .exec(),
       this.articleEntity.countDocuments(query).exec(),
     ]);
