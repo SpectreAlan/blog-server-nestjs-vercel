@@ -3,6 +3,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { CommentEntity } from './entities/comment.entity';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentService {
@@ -20,10 +21,16 @@ export class CommentService {
     };
   }
 
-  async findAll({ page, limit, title }) {
+  async findAll({ page, limit, content, article, email }) {
     const query: any = {};
-    if (title) {
-      query.title = { $regex: new RegExp(title, 'i') };
+    if (content) {
+      query.content = { $regex: new RegExp(content, 'i') };
+    }
+    if (article) {
+      query.article = { $regex: new RegExp(article, 'i') };
+    }
+    if (email) {
+      query.email = { $regex: new RegExp(email, 'i') };
     }
     const [list, total] = await Promise.all([
       this.commentEntity
@@ -36,6 +43,26 @@ export class CommentService {
       this.commentEntity.countDocuments(query).exec(),
     ]);
     return { data: { total, list } };
+  }
+
+  async update(id: string, updateCommentDto: UpdateCommentDto) {
+    const comment = await this.commentEntity.findById(id);
+    if (!comment) {
+      throw new HttpException('评论不存在', HttpStatus.BAD_REQUEST);
+    }
+    Object.assign(comment, updateCommentDto);
+    const data = await comment.save();
+    return {
+      data,
+      message: '更新成功',
+    };
+  }
+
+  async findOne(id: string) {
+    const data = await this.commentEntity.findById(id);
+    return {
+      data,
+    };
   }
 
   async remove(ids: MongooseSchema.Types.ObjectId[]) {

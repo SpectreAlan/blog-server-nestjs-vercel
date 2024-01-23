@@ -6,9 +6,15 @@ export class CreateCommentDto {
   @IsNotEmpty({ message: '文章ID必填' })
   readonly article: string;
 
-  @IsNotEmpty({ message: '昵称必填' })
   readonly nickName: string;
 
   readonly email: string;
+
   readonly parentId: string;
+
+  readonly author: number;
+
+  readonly pinned: number;
+
+  readonly status: number;
 }
