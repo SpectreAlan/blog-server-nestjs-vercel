@@ -13,7 +13,7 @@ export class CommentEntity {
   })
   article: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop()
   nickName: string;
 
   @Prop()
@@ -21,6 +21,15 @@ export class CommentEntity {
 
   @Prop({ default: -1 })
   parentId: string;
+
+  @Prop({ default: 0 })
+  status: number;
+
+  @Prop({ default: 0 })
+  author: number;
+
+  @Prop({ default: 0 })
+  pinned: number;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(CommentEntity);
