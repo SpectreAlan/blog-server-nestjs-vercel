@@ -50,6 +50,11 @@ export class BlogController {
     return this.articleService.getArticleCountByCategory();
   }
 
+  @Get('statistics')
+  async statistics() {
+    return this.articleService.statistics();
+  }
+
   @Get('recentUpdate')
   async recentUpdate() {
     return this.articleService.recentUpdate();

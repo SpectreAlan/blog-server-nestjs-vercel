@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { ArticleEntity } from './entities/article.entity';
 import { TagService } from '../tag/tag.service';
+import { statisticsByMonth } from '../../core/utils';
 
 @Injectable()
 export class ArticleService {
@@ -102,6 +103,16 @@ export class ArticleService {
       data: null,
       message: '删除成功',
     };
+  }
+
+  async statistics() {
+    const result = await statisticsByMonth(
+      this.articleEntity,
+      '2023-01-01',
+      '2024-02-01',
+    );
+    console.log(result);
+    return { data: { result } };
   }
 
   async getArticleCountByCategory() {

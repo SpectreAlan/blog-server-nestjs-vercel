@@ -39,9 +39,84 @@ export const aliOSS = () => {
   });
 };
 
-export const getUnix = (minutes: number) => {
-  const currentTime = new Date();
-  const futureTime = new Date(currentTime.getTime() + minutes * 60 * 1000);
-  const unixTimestamp = Math.floor(futureTime.getTime() / 1000);
-  return unixTimestamp.toString();
+export const statisticsByMonth = async (entity, start, end) => {
+  return await entity.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: new Date(start),
+          $lte: new Date(end),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: '$createdAt' },
+          month: { $month: '$createdAt' },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: {
+          $dateFromParts: {
+            year: '$_id.year',
+            month: '$_id.month',
+            day: 1,
+          },
+        },
+        count: 1,
+      },
+    },
+    {
+      $project: {
+        month: { $dateToString: { format: '%Y-%m', date: '$month' } },
+        count: 1,
+      },
+    },
+  ]);
+};
+export const statisticsByDay = async (entity, start, end) => {
+  return await entity.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: new Date(start),
+          $lte: new Date(end),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: '$createdAt' },
+          month: { $month: '$createdAt' },
+          day: { $dayOfMonth: '$createdAt' },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        day: {
+          $dateFromParts: {
+            year: '$_id.year',
+            month: '$_id.month',
+            day: '$_id.day',
+          },
+        },
+        count: 1,
+      },
+    },
+    {
+      $project: {
+        day: { $dateToString: { format: '%Y-%m-%d', date: '$day' } },
+        count: 1,
+      },
+    },
+  ]);
 };
