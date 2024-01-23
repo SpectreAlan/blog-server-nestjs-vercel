@@ -7,8 +7,6 @@ import {
   UsePipes,
   Query,
   UseInterceptors,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { ArticleService } from '../admin/article/article.service';
 import { CommentService } from '../admin/comment/comment.service';
@@ -97,7 +95,7 @@ export class BlogController {
 
   @Get('detail')
   detail(@Query('id') id: string) {
-    return this.articleService.findOne(id);
+    return this.articleService.detail(id);
   }
 
   @Get('related')

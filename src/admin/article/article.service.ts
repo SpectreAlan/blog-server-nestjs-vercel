@@ -60,7 +60,7 @@ export class ArticleService {
       this.articleEntity
         .find(query)
         .sort({ createdAt: -1 })
-        .select('_id title category cover tags scan createdAt updatedAt')
+        .select('_id title category cover tags scan status createdAt updatedAt')
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('category', 'title')
@@ -73,10 +73,7 @@ export class ArticleService {
   }
 
   async findOne(id: string) {
-    const data = await this.articleEntity
-      .findById(id)
-      .populate('tags', 'title')
-      .populate('category', 'title');
+    const data = await this.articleEntity.findById(id);
     return {
       data,
     };
@@ -144,6 +141,16 @@ export class ArticleService {
       };
     });
     return { data: { categoryList, totalArticle, totalCategory } };
+  }
+
+  async detail(id: string) {
+    const data = await this.articleEntity
+      .findById(id)
+      .populate('category', 'title')
+      .populate('tags', 'title');
+    return {
+      data,
+    };
   }
 
   async recentUpdate() {
