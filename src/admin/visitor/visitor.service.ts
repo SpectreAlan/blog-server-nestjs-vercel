@@ -75,7 +75,7 @@ export class VisitorService {
   async analysis(start: string, end: string) {
     const startDate = new Date(start);
     const endDate = new Date(end + ' 23:59:59.999');
-    const data = await this.visitorEntity
+    const list = await this.visitorEntity
       .find({
         createdAt: {
           $gte: startDate,
@@ -83,6 +83,20 @@ export class VisitorService {
         },
       })
       .exec();
+    const keys = ['country', 'province', 'city', 'device', 'os'];
+    const data: any = {};
+    list.map((item) => {
+      keys.map((type) => {
+        const key = item[type];
+        if (!data[type]) {
+          data[type] = {};
+        }
+        if (!data[type][key]) {
+          data[type][key] = 0;
+        }
+        data[type][key] += 1;
+      });
+    });
     return { data };
   }
 }
