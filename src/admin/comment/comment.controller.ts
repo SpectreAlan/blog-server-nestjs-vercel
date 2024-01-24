@@ -45,8 +45,8 @@ export class CommentController {
     });
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('detail')
+  findOne(@Query('id') id: string) {
     return this.commentService.findOne(id);
   }
 
@@ -59,5 +59,14 @@ export class CommentController {
   @UsePipes(ClassValidatorPipe)
   remove(@Body() deleteItemsDto: DeleteItemsDto) {
     return this.commentService.remove(deleteItemsDto.ids);
+  }
+
+  @Get('statistics')
+  statistics(
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Query('type') type: string,
+  ) {
+    return this.commentService.statistics(start, end, type);
   }
 }
