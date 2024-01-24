@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { CommentEntity } from './entities/comment.entity';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { statisticsByDay, statisticsByMonth } from '../../core/utils';
+import { statistics } from '../../core/utils/statistics';
 
 @Injectable()
 export class CommentService {
@@ -80,13 +80,7 @@ export class CommentService {
   }
 
   async statistics(start: string, end: string, type: string) {
-    const startDate = new Date(start);
-    const endDate = new Date(end + ' 23:59:59.999');
-    const data =
-      type === 'day'
-        ? await statisticsByDay(this.commentEntity, startDate, endDate)
-        : await statisticsByMonth(this.commentEntity, startDate, endDate);
-    return { data };
+    return await statistics(this.commentEntity, start, end, type);
   }
 
   async comments(article: string) {

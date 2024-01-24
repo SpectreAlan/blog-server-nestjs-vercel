@@ -7,7 +7,7 @@ import { Model, Schema as MongooseSchema } from 'mongoose';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
-import { setToken } from '../../core/utils';
+import { setToken } from '../../core/utils/common';
 
 @Injectable()
 export class UserService {

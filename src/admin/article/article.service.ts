@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { ArticleEntity } from './entities/article.entity';
 import { TagService } from '../tag/tag.service';
-import { statisticsByDay, statisticsByMonth } from '../../core/utils';
+import { statistics } from '../../core/utils/statistics';
 
 @Injectable()
 export class ArticleService {
@@ -107,13 +107,7 @@ export class ArticleService {
   }
 
   async statistics(start: string, end: string, type: string) {
-    const startDate = new Date(start);
-    const endDate = new Date(end + ' 23:59:59.999');
-    const data =
-      type === 'day'
-        ? await statisticsByDay(this.articleEntity, startDate, endDate)
-        : await statisticsByMonth(this.articleEntity, startDate, endDate);
-    return { data };
+    return await statistics(this.articleEntity, start, end, type);
   }
 
   async getArticleCountByCategory() {

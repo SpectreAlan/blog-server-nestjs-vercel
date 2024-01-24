@@ -3,7 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { Inject } from '@nestjs/common';
 import { PoemService } from '../poem/poem.service';
 import axios from 'axios';
-import { aliOSS } from '../../core/utils';
+import { aliOSS } from '../../core/utils/common';
 
 @Injectable()
 export class ScheduleService {

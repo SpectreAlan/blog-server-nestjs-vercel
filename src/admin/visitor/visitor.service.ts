@@ -3,7 +3,7 @@ import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { VisitorEntity } from './entities/visitor.entity';
-import { statisticsByDay, statisticsByMonth } from '../../core/utils';
+import { statistics } from '../../core/utils/statistics';
 
 @Injectable()
 export class VisitorService {
@@ -61,12 +61,6 @@ export class VisitorService {
   }
 
   async statistics(start: string, end: string, type: string) {
-    const startDate = new Date(start);
-    const endDate = new Date(end + ' 23:59:59.999');
-    const data =
-      type === 'day'
-        ? await statisticsByDay(this.visitorEntity, startDate, endDate)
-        : await statisticsByMonth(this.visitorEntity, startDate, endDate);
-    return { data };
+    return await statistics(this.visitorEntity, start, end, type);
   }
 }

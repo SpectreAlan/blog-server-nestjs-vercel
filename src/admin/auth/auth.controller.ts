@@ -12,7 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UseGuards, Inject } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import { UserService } from '../user/user.service';
-import { responseLoginResult } from '../../core/utils';
+import { responseLoginResult } from '../../core/utils/common';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
