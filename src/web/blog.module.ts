@@ -6,6 +6,7 @@ import { CommentModule } from '../admin/comment/comment.module';
 import { PoemModule } from '../admin/poem/poem.module';
 import { SettingModule } from '../admin/setting/setting.module';
 import { ArticleModule } from '../admin/article/article.module';
+import { VisitorModule } from '../admin/visitor/visitor.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ArticleModule } from '../admin/article/article.module';
     ArticleModule,
     PoemModule,
     SettingModule,
+    VisitorModule,
   ],
   controllers: [BlogController],
   providers: [],

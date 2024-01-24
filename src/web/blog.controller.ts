@@ -12,10 +12,12 @@ import { ArticleService } from '../admin/article/article.service';
 import { CommentService } from '../admin/comment/comment.service';
 import { TagService } from '../admin/tag/tag.service';
 import { PoemService } from '../admin/poem/poem.service';
+import { VisitorService } from '../admin/visitor/visitor.service';
 import { SettingService } from '../admin/setting/setting.service';
 import { CreateCommentDto } from '../admin/comment/dto/create-comment.dto';
 import { ClassValidatorPipe } from '../core/pipes/validationPipe';
 import { ResponseInterceptor } from '../core/interceptors/response.interceptor';
+import { CreateVisitorDto } from '../admin/visitor/dto/create-visitor.dto';
 
 @Controller('blog')
 @UseInterceptors(ResponseInterceptor)
@@ -26,6 +28,7 @@ export class BlogController {
     private readonly tagService: TagService,
     private readonly poemService: PoemService,
     private readonly settingService: SettingService,
+    private readonly visitorService: VisitorService,
   ) {}
 
   @Post('comment')
@@ -50,11 +53,6 @@ export class BlogController {
     return this.articleService.getArticleCountByCategory();
   }
 
-  @Get('statistics')
-  async statistics() {
-    return this.articleService.statistics();
-  }
-
   @Get('recentUpdate')
   async recentUpdate() {
     return this.articleService.recentUpdate();
@@ -73,6 +71,12 @@ export class BlogController {
   @Get('visitor')
   async visitor() {
     return this.settingService.incrementVisitorCount();
+  }
+
+  @Post('statistics')
+  @UsePipes(ClassValidatorPipe)
+  async statistics(@Body() createVisitorDto: CreateVisitorDto) {
+    return this.visitorService.create(createVisitorDto);
   }
 
   @Get('notice')
