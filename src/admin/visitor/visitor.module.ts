@@ -25,6 +25,7 @@ export class VisitorModule implements NestModule {
       .forRoutes(
         { path: 'visitor', method: RequestMethod.GET },
         { path: 'visitor', method: RequestMethod.DELETE },
+        { path: 'visitor/statistics', method: RequestMethod.GET },
       );
   }
 }

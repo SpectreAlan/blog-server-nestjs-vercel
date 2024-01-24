@@ -12,6 +12,7 @@ import { TagModule } from '../tag/tag.module';
 import { CategoryModule } from '../category/category.module';
 import { ValidateIdMiddleware } from '../../core/middleware/validate-id.middleware';
 import { AuthMiddleware } from '../../core/middleware/auth.middleware';
+
 @Module({
   imports: [
     TagModule,
@@ -29,6 +30,9 @@ export class ArticleModule implements NestModule {
       .forRoutes({ path: 'article/:id', method: RequestMethod.PATCH });
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: 'article', method: RequestMethod.ALL });
+      .forRoutes(
+        { path: 'article', method: RequestMethod.ALL },
+        { path: 'article/*', method: RequestMethod.ALL },
+      );
   }
 }
