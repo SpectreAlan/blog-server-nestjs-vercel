@@ -40,12 +40,12 @@ export const aliOSS = () => {
 };
 
 export const statisticsByMonth = async (entity, start, end) => {
-  return await entity.aggregate([
+  const data = await entity.aggregate([
     {
       $match: {
         createdAt: {
-          $gte: new Date(start),
-          $lte: new Date(end),
+          $gte: start,
+          $lte: end,
         },
       },
     },
@@ -78,14 +78,15 @@ export const statisticsByMonth = async (entity, start, end) => {
       },
     },
   ]);
+  return getMonthEchartsOption(start, end, data);
 };
 export const statisticsByDay = async (entity, start, end) => {
-  return await entity.aggregate([
+  const data = await entity.aggregate([
     {
       $match: {
         createdAt: {
-          $gte: new Date(start),
-          $lte: new Date(end),
+          $gte: start,
+          $lte: end,
         },
       },
     },
@@ -119,4 +120,43 @@ export const statisticsByDay = async (entity, start, end) => {
       },
     },
   ]);
+  return getDaysEchartsOption(start, end, data);
+};
+
+export const getMonthEchartsOption = (start, end, data) => {
+  const xAxis = [];
+  const series = [];
+  const o = {};
+  data.map(({ count, month }) => (o[month] = count));
+
+  while (start <= end) {
+    const year = start.getFullYear();
+    const month = start.getMonth() + 1;
+    const formattedMonth = `${year}-${month.toString().padStart(2, '0')}`;
+    xAxis.push(formattedMonth);
+    series.push(o[formattedMonth] || 0);
+
+    start.setMonth(start.getMonth() + 1);
+  }
+  return {
+    xAxis,
+    series,
+  };
+};
+export const getDaysEchartsOption = (start, end, data) => {
+  const xAxis = [];
+  const series = [];
+  const o = {};
+  data.map(({ count, day }) => (o[day] = count));
+
+  while (start <= end) {
+    const day = start.toISOString().split('T')[0];
+    xAxis.push(day);
+    start.setDate(start.getDate() + 1);
+    series.push(o[day] || 0);
+  }
+  return {
+    xAxis,
+    series,
+  };
 };
