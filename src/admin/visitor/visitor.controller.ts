@@ -33,6 +33,8 @@ export class VisitorController {
     @Query('country') country: string,
     @Query('province') province: string,
     @Query('city') city: string,
+    @Query('start') start: string,
+    @Query('end') end: string,
   ) {
     return this.visitorService.findAll({
       page,
@@ -41,6 +43,8 @@ export class VisitorController {
       city,
       province,
       country,
+      end,
+      start,
     });
   }
 
@@ -57,5 +61,10 @@ export class VisitorController {
     @Query('type') type: string,
   ) {
     return this.visitorService.statistics(start, end, type);
+  }
+
+  @Get('records')
+  records(@Query('start') start: string, @Query('end') end: string) {
+    return this.visitorService.types(start, end);
   }
 }

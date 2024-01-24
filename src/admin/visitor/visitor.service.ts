@@ -21,7 +21,7 @@ export class VisitorService {
     };
   }
 
-  async findAll({ page, limit, ip, country, city, province }) {
+  async findAll({ page, limit, ip, country, city, province, start, end }) {
     const query: any = {};
     if (ip) {
       query.ip = { $regex: new RegExp(ip, 'i') };
@@ -34,6 +34,14 @@ export class VisitorService {
     }
     if (province) {
       query.province = { $regex: new RegExp(province, 'i') };
+    }
+    if (start && end) {
+      const startDate = new Date(start);
+      const endDate = new Date(end + ' 23:59:59.999');
+      query.createdAt = {
+        $gte: startDate,
+        $lte: endDate,
+      };
     }
     const [list, total] = await Promise.all([
       this.visitorEntity
@@ -62,5 +70,19 @@ export class VisitorService {
 
   async statistics(start: string, end: string, type: string) {
     return await statistics(this.visitorEntity, start, end, type);
+  }
+
+  async types(start: string, end: string) {
+    const startDate = new Date(start);
+    const endDate = new Date(end + ' 23:59:59.999');
+    const data = await this.visitorEntity
+      .find({
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      })
+      .exec();
+    return { data };
   }
 }
