@@ -63,8 +63,8 @@ export class VisitorController {
     return this.visitorService.statistics(start, end, type);
   }
 
-  @Get('records')
-  records(@Query('start') start: string, @Query('end') end: string) {
-    return this.visitorService.types(start, end);
+  @Get('analysis')
+  analysis(@Query('start') start: string, @Query('end') end: string) {
+    return this.visitorService.analysis(start, end);
   }
 }

@@ -72,7 +72,7 @@ export class VisitorService {
     return await statistics(this.visitorEntity, start, end, type);
   }
 
-  async types(start: string, end: string) {
+  async analysis(start: string, end: string) {
     const startDate = new Date(start);
     const endDate = new Date(end + ' 23:59:59.999');
     const data = await this.visitorEntity
