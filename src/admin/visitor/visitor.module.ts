@@ -8,7 +8,6 @@ import { VisitorService } from './visitor.service';
 import { VisitorController } from './visitor.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VisitorSchema } from './entities/visitor.entity';
-import { ValidateIdMiddleware } from '../../core/middleware/validate-id.middleware';
 import { AuthMiddleware } from '../../core/middleware/auth.middleware';
 
 @Module({
@@ -21,9 +20,6 @@ import { AuthMiddleware } from '../../core/middleware/auth.middleware';
 })
 export class VisitorModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ValidateIdMiddleware)
-      .forRoutes({ path: 'visitor/:id', method: RequestMethod.ALL });
     consumer
       .apply(AuthMiddleware)
       .forRoutes(

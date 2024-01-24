@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Param,
   Delete,
   Query,
   UsePipes,
@@ -49,5 +48,14 @@ export class VisitorController {
   @UsePipes(ClassValidatorPipe)
   remove(@Body() deleteItemsDto: DeleteItemsDto) {
     return this.visitorService.remove(deleteItemsDto.ids);
+  }
+
+  @Get('statistics')
+  statistics(
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Query('type') type: string,
+  ) {
+    return this.visitorService.statistics(start, end, type);
   }
 }
