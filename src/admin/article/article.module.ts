@@ -26,7 +26,7 @@ export class ArticleModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ValidateIdMiddleware)
-      .forRoutes({ path: 'article/:id', method: RequestMethod.ALL });
+      .forRoutes({ path: 'article/:id', method: RequestMethod.PATCH });
     consumer
       .apply(AuthMiddleware)
       .forRoutes({ path: 'article', method: RequestMethod.ALL });

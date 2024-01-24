@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { ArticleEntity } from './entities/article.entity';
 import { TagService } from '../tag/tag.service';
-import { statisticsByMonth } from '../../core/utils';
+import { statisticsByDay, statisticsByMonth } from '../../core/utils';
 
 @Injectable()
 export class ArticleService {
@@ -92,6 +92,7 @@ export class ArticleService {
       message: '更新成功',
     };
   }
+
   async remove(ids: MongooseSchema.Types.ObjectId[]) {
     const data = await this.articleEntity.deleteMany({
       _id: { $in: ids },
@@ -105,14 +106,14 @@ export class ArticleService {
     };
   }
 
-  async statistics() {
-    const result = await statisticsByMonth(
-      this.articleEntity,
-      '2023-01-01',
-      '2024-02-01',
-    );
-    console.log(result);
-    return { data: { result } };
+  async statistics(start: string, end: string, type: string) {
+    const startDate = new Date(start);
+    const endDate = new Date(end + ' 23:59:59.999');
+    const data =
+      type === 'day'
+        ? await statisticsByDay(this.articleEntity, startDate, endDate)
+        : await statisticsByMonth(this.articleEntity, startDate, endDate);
+    return { data };
   }
 
   async getArticleCountByCategory() {

@@ -49,8 +49,8 @@ export class ArticleController {
     });
   }
 
-  @Get(':_id')
-  findOne(@Param('_id') id: string) {
+  @Get('detail')
+  findOne(@Query('id') id: string) {
     return this.articleService.findOne(id);
   }
 
@@ -64,5 +64,14 @@ export class ArticleController {
   @UsePipes(ClassValidatorPipe)
   remove(@Body() deleteItemsDto: DeleteItemsDto) {
     return this.articleService.remove(deleteItemsDto.ids);
+  }
+
+  @Get('statistics')
+  statistics(
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Query('type') type: string,
+  ) {
+    return this.articleService.statistics(start, end, type);
   }
 }
