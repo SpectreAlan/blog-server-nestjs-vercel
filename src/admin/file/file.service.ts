@@ -63,10 +63,17 @@ export class FileService {
     }
   }
 
-  async findAll({ page, limit }) {
+  async findAll({ page, limit, url, description }) {
+    const query: any = {};
+    if (url) {
+      query.url = { $regex: new RegExp(url, 'i') };
+    }
+    if (description) {
+      query.description = { $regex: new RegExp(description, 'i') };
+    }
     const [list, total] = await Promise.all([
       this.fileEntity
-        .find()
+        .find(query)
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)

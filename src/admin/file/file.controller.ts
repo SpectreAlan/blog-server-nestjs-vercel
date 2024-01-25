@@ -34,8 +34,10 @@ export class FileController {
   findAll(
     @Query('current') page: number = 1,
     @Query('pageSize') limit: number = 10,
+    @Query('url') url: string,
+    @Query('description') description: string,
   ) {
-    return this.fileService.findAll({ page, limit });
+    return this.fileService.findAll({ page, limit, url, description });
   }
 
   @Delete(':_id')
