@@ -3,6 +3,8 @@ import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
 import * as Client from 'ali-oss';
 import { InjectModel } from '@nestjs/mongoose';
+import { UploadFileDto } from './dto/upload-file.dto';
+import { aliOSS } from '../../core/utils/common';
 
 @Injectable()
 export class FileService {
@@ -45,6 +47,22 @@ export class FileService {
     };
   }
 
+  async create(uploadFileDto: UploadFileDto) {
+    try {
+      const create = await this.fileEntity.create(uploadFileDto);
+      await create.save();
+      return {
+        message: '添加成功',
+        data: null,
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new HttpException('文件已存在', HttpStatus.BAD_REQUEST);
+      }
+      throw error;
+    }
+  }
+
   async findAll({ page, limit }) {
     const [list, total] = await Promise.all([
       this.fileEntity
@@ -64,12 +82,12 @@ export class FileService {
     if (!file) {
       throw new HttpException('文件不存在', HttpStatus.BAD_REQUEST);
     }
-    // const oss = aliOSS();
-    // const result = await oss.delete(file.url);
-    //
-    // if (result.res.status !== 204) {
-    //   throw new HttpException('删除失败', HttpStatus.BAD_REQUEST);
-    // }
+    const oss = aliOSS();
+    const result = await oss.delete(file.url.replace('image-base-url/', ''));
+
+    if (result.res.status !== 204) {
+      throw new HttpException('删除失败', HttpStatus.BAD_REQUEST);
+    }
     await this.fileEntity.findByIdAndDelete(id);
     return {
       data: null,

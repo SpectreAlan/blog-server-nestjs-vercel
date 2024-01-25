@@ -2,17 +2,17 @@ import {
   Controller,
   Get,
   Post,
-  UploadedFile,
   Param,
   Delete,
   UseInterceptors,
   Body,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { Express } from 'express';
 import { FileService } from './file.service';
-import { UploadFileDto } from './dto/upload-file.dto';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
+import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
+import { UploadFileDto } from './dto/upload-file.dto';
 
 @Controller('file')
 @UseInterceptors(ResponseInterceptor)
@@ -22,6 +22,12 @@ export class FileController {
   @Get('signature')
   async signature() {
     return this.fileService.signature();
+  }
+
+  @Post()
+  @UsePipes(ClassValidatorPipe)
+  create(@Body() uploadFileDto: UploadFileDto) {
+    return this.fileService.create(uploadFileDto);
   }
 
   @Get()
