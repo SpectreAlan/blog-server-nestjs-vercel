@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
-import * as OSS from 'ali-oss';
+const OSS = require('ali-oss');
 import { InjectModel } from '@nestjs/mongoose';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { aliOSS } from '../../core/utils/common';
