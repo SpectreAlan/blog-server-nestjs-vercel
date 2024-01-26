@@ -1,6 +1,6 @@
 import { Response as ExpressResponse } from 'express';
 import { sign } from 'jsonwebtoken';
-import * as OSS from 'ali-oss';
+const OSS = require('ali-oss');
 
 export const responseLoginResult = (res: ExpressResponse, user) => {
   const { status, nickName, role, avatar, _id: id, password, account } = user;
@@ -26,7 +26,7 @@ export const responseLoginResult = (res: ExpressResponse, user) => {
 
 export const setToken = (role: string, account: string) => {
   return sign({ account, role }, process.env.SECRET_KEY, {
-    expiresIn: '1h',
+    expiresIn: '2h',
   });
 };
 
