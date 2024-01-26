@@ -32,7 +32,7 @@ export class FileService {
     };
     const formData = await client.calculatePostSignature(policy);
     const location = await client.getBucketLocation();
-    const host = `http://${config.bucket}.${location.location}.aliyuncs.com`;
+    const host = `https://${config.bucket}.${location.location}.aliyuncs.com`;
 
     return {
       data: {
