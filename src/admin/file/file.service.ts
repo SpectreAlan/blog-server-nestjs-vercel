@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FileEntity } from './entities/file.entity';
 import { Model } from 'mongoose';
-import * as Client from 'ali-oss';
+import * as OSS from 'ali-oss';
 import { InjectModel } from '@nestjs/mongoose';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { aliOSS } from '../../core/utils/common';
@@ -9,13 +9,13 @@ import { aliOSS } from '../../core/utils/common';
 @Injectable()
 export class FileService {
   constructor(
-    @InjectModel('File')
-    private readonly fileEntity: Model<FileEntity>,
+      @InjectModel('File')
+      private readonly fileEntity: Model<FileEntity>,
   ) {}
 
   async signature() {
     const date = new Date();
-    date.setMinutes(date.getMinutes() + 2);
+    date.setMinutes(date.getMinutes() + 10);
     const expiration = date.toISOString();
     const config = {
       accessKeyId: process.env.OSS_ALIYUN_KEY,
@@ -24,7 +24,7 @@ export class FileService {
       bucket: process.env.OSS_ALIYUN_BUCKET,
     };
 
-    const client = new Client(config);
+    const client = new OSS(config);
 
     const policy = {
       expiration,
@@ -32,7 +32,7 @@ export class FileService {
     };
     const formData = await client.calculatePostSignature(policy);
     const location = await client.getBucketLocation();
-    const host = `http://${config.bucket}.${location.location}.aliyuncs.com`;
+    const host = `https://${config.bucket}.${location.location}.aliyuncs.com`;
 
     return {
       data: {
@@ -73,11 +73,11 @@ export class FileService {
     }
     const [list, total] = await Promise.all([
       this.fileEntity
-        .find(query)
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .exec(),
+          .find(query)
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .exec(),
       this.fileEntity.countDocuments().exec(),
     ]);
 
