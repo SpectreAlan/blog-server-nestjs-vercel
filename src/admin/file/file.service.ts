@@ -9,8 +9,8 @@ import { aliOSS } from '../../core/utils/common';
 @Injectable()
 export class FileService {
   constructor(
-      @InjectModel('File')
-      private readonly fileEntity: Model<FileEntity>,
+    @InjectModel('File')
+    private readonly fileEntity: Model<FileEntity>,
   ) {}
 
   async signature() {
@@ -73,11 +73,11 @@ export class FileService {
     }
     const [list, total] = await Promise.all([
       this.fileEntity
-          .find(query)
-          .sort({ createdAt: -1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-          .exec(),
+        .find(query)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec(),
       this.fileEntity.countDocuments().exec(),
     ]);
 

@@ -32,9 +32,15 @@ export class UserService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    const { account, password } = loginUserDto;
+  async login(loginUserDto: LoginUserDto, code: string) {
+    const { account, password, captcha } = loginUserDto;
+    if (!code || !captcha || code?.toLowerCase() !== captcha?.toLowerCase()) {
+      throw new HttpException('验证码不正确', HttpStatus.BAD_REQUEST);
+    }
     const user = await this.userEntity.findOne({ account });
+    if (!user) {
+      throw new HttpException('用户名/密码不正确', HttpStatus.BAD_REQUEST);
+    }
     const result = await bcrypt.compare(password, user?.password);
     if (result) {
       const { _id, role, avatar, account, nickName, email, status } =
@@ -47,9 +53,12 @@ export class UserService {
           message: 'success',
         };
       }
-      return { data: null, code: 400, message: '用户已禁用，请联系管理系' };
+      throw new HttpException(
+        '用户已禁用，请联系管理系',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return { data: null, code: 400, message: '用户名/密码不正确' };
+    throw new HttpException('用户名/密码不正确', HttpStatus.BAD_REQUEST);
   }
 
   async findAll({ page, limit, account, status, role, email }) {

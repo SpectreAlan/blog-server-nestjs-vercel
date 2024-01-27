@@ -5,4 +5,7 @@ export class LoginUserDto {
 
   @IsNotEmpty({ message: '密码必填' })
   readonly password: string;
+
+  @IsNotEmpty({ message: '验证码必填' })
+  readonly captcha: string;
 }
