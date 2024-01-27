@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -10,9 +11,15 @@ export class AuthMiddleware implements NestMiddleware {
       req.user = verify(token, process.env.SECRET_KEY);
       next();
     } catch (error) {
-      return res
-        .status(401)
-        .json({ message: '会话已过期，请重新登录', code: 401, data: null });
+      const encrypted = CryptoJS.AES.encrypt(
+          JSON.stringify({
+            code: 401,
+            message: '会话已过期，请重新登录',
+            data: null,
+          }),
+          process.env.CRYPTO_SECRET_KEY,
+      );
+      res.status(401).send(encrypted.toString());
     }
   }
 }
