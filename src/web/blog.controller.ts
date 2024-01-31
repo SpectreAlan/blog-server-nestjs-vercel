@@ -23,12 +23,12 @@ import { CreateVisitorDto } from '../admin/visitor/dto/create-visitor.dto';
 @UseInterceptors(ResponseInterceptor)
 export class BlogController {
   constructor(
-      private readonly articleService: ArticleService,
-      private readonly commentService: CommentService,
-      private readonly tagService: TagService,
-      private readonly poemService: PoemService,
-      private readonly settingService: SettingService,
-      private readonly visitorService: VisitorService,
+    private readonly articleService: ArticleService,
+    private readonly commentService: CommentService,
+    private readonly tagService: TagService,
+    private readonly poemService: PoemService,
+    private readonly settingService: SettingService,
+    private readonly visitorService: VisitorService,
   ) {}
 
   @Post('comment')
@@ -51,7 +51,7 @@ export class BlogController {
   @Get('aside')
   async aside() {
     const category = await this.articleService.getArticleCountByCategory();
-    const recentUpdate = await this.articleService.recentUpdate();
+    const list = await this.articleService.recentUpdate();
     const notice = await this.settingService.getNotice();
     const tags = await this.tagService.findAll({
       page: 1,
@@ -61,13 +61,7 @@ export class BlogController {
     return {
       data: {
         ...category,
-        recentUpdate: recentUpdate.map((item) => {
-          const { _id, ...res } = item.toObject();
-          return {
-            id: _id,
-            ...res,
-          };
-        }),
+        list,
         tags: tags.data.list.map((item) => item.title),
         notice,
       },
@@ -97,10 +91,10 @@ export class BlogController {
 
   @Get('list')
   list(
-      @Query('current') page: number = 1,
-      @Query('keywords') keywords: string,
-      @Query('category') category: string,
-      @Query('tags') tags: string,
+    @Query('current') page: number = 1,
+    @Query('keywords') keywords: string,
+    @Query('category') category: string,
+    @Query('tags') tags: string,
   ) {
     return this.articleService.findAll({
       page,
