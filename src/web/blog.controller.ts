@@ -48,21 +48,28 @@ export class BlogController {
     return this.commentService.comments(id);
   }
 
-  @Get('category')
-  async category() {
-    return this.articleService.getArticleCountByCategory();
+  @Get('aside')
+  async aside() {
+    const category = await this.articleService.getArticleCountByCategory();
+    const recentUpdate = await this.articleService.recentUpdate();
+    const notice = await this.settingService.getNotice();
+    const tags = await this.tagService.findAll({
+      page: 1,
+      limit: 100,
+      title: '',
+    });
+    return {
+      data: {
+        ...category,
+        recentUpdate: recentUpdate.map(({ _id, ...res }) => ({
+          id: _id,
+          ...res,
+        })),
+        tags: tags.data.list.map((item) => item.title),
+        notice,
+      },
+    };
   }
-
-  @Get('recentUpdate')
-  async recentUpdate() {
-    return this.articleService.recentUpdate();
-  }
-
-  @Get('tags')
-  async tags() {
-    return this.tagService.findAll({ page: 1, limit: 100, title: '' });
-  }
-
   @Get('poem')
   async poem() {
     return this.poemService.getRandomPoems();
@@ -77,11 +84,6 @@ export class BlogController {
   @UsePipes(ClassValidatorPipe)
   async statistics(@Body() createVisitorDto: CreateVisitorDto) {
     return this.visitorService.create(createVisitorDto);
-  }
-
-  @Get('notice')
-  async notice() {
-    return this.settingService.getNotice();
   }
 
   @Get('timeLine')

@@ -146,7 +146,7 @@ export class ArticleService {
         count: item.count,
       };
     });
-    return { data: { categoryList, totalArticle, totalCategory } };
+    return { categoryList, totalArticle, totalCategory };
   }
 
   async detail(id: string) {
@@ -160,14 +160,12 @@ export class ArticleService {
   }
 
   async recentUpdate() {
-    const list = await this.articleEntity
+    return await this.articleEntity
       .find()
       .select('_id title description cover updatedAt')
       .sort({ createdAt: -1 })
       .limit(10)
       .exec();
-
-    return { data: { list } };
   }
 
   async timeLine() {

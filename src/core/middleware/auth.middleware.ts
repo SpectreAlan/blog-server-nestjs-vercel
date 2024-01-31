@@ -12,12 +12,12 @@ export class AuthMiddleware implements NestMiddleware {
       next();
     } catch (error) {
       const encrypted = CryptoJS.AES.encrypt(
-          JSON.stringify({
-            code: 401,
-            message: '会话已过期，请重新登录',
-            data: null,
-          }),
-          process.env.CRYPTO_SECRET_KEY,
+        JSON.stringify({
+          code: 401,
+          message: '会话已过期，请重新登录',
+          data: null,
+        }),
+        process.env.CRYPTO_SECRET_KEY,
       );
       res.status(401).send(encrypted.toString());
     }

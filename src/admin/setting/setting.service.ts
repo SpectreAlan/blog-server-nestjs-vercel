@@ -125,9 +125,6 @@ export class SettingService {
         message: 'success',
       };
     }
-    return {
-      data: notice.toObject().value,
-      message: 'success',
-    };
+    return notice.toObject().value;
   }
 }
