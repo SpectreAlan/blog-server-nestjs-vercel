@@ -23,12 +23,12 @@ import { CreateVisitorDto } from '../admin/visitor/dto/create-visitor.dto';
 @UseInterceptors(ResponseInterceptor)
 export class BlogController {
   constructor(
-    private readonly articleService: ArticleService,
-    private readonly commentService: CommentService,
-    private readonly tagService: TagService,
-    private readonly poemService: PoemService,
-    private readonly settingService: SettingService,
-    private readonly visitorService: VisitorService,
+      private readonly articleService: ArticleService,
+      private readonly commentService: CommentService,
+      private readonly tagService: TagService,
+      private readonly poemService: PoemService,
+      private readonly settingService: SettingService,
+      private readonly visitorService: VisitorService,
   ) {}
 
   @Post('comment')
@@ -61,15 +61,19 @@ export class BlogController {
     return {
       data: {
         ...category,
-        recentUpdate: recentUpdate.map(({ _id, ...res }) => ({
-          id: _id,
-          ...res,
-        })),
+        recentUpdate: recentUpdate.map((item) => {
+          const { _id, ...res } = item.toObject();
+          return {
+            id: _id,
+            ...res,
+          };
+        }),
         tags: tags.data.list.map((item) => item.title),
         notice,
       },
     };
   }
+
   @Get('poem')
   async poem() {
     return this.poemService.getRandomPoems();
@@ -93,10 +97,10 @@ export class BlogController {
 
   @Get('list')
   list(
-    @Query('current') page: number = 1,
-    @Query('keywords') keywords: string,
-    @Query('category') category: string,
-    @Query('tags') tags: string,
+      @Query('current') page: number = 1,
+      @Query('keywords') keywords: string,
+      @Query('category') category: string,
+      @Query('tags') tags: string,
   ) {
     return this.articleService.findAll({
       page,
