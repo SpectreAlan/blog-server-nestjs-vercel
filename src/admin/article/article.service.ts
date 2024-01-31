@@ -10,10 +10,10 @@ import { statistics } from '../../core/utils/statistics';
 @Injectable()
 export class ArticleService {
   constructor(
-      @InjectModel('Article')
-      private readonly articleEntity: Model<ArticleEntity>,
-      @Inject(TagService)
-      private readonly tagService: TagService,
+    @InjectModel('Article')
+    private readonly articleEntity: Model<ArticleEntity>,
+    @Inject(TagService)
+    private readonly tagService: TagService,
   ) {}
 
   async create(article: CreateArticleDto) {
@@ -59,16 +59,16 @@ export class ArticleService {
     }
     const [articles, total] = await Promise.all([
       this.articleEntity
-          .find(query)
-          .sort({ createdAt: -1 })
-          .select(
-              '_id title category cover tags scan status createdAt updatedAt description',
-          )
-          .skip((page - 1) * limit)
-          .limit(limit)
-          .populate('category', 'title')
-          .populate('tags', 'title')
-          .exec(),
+        .find(query)
+        .sort({ createdAt: -1 })
+        .select(
+          '_id title category cover tags scan status createdAt updatedAt description',
+        )
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate('category', 'title')
+        .populate('tags', 'title')
+        .exec(),
       this.articleEntity.countDocuments(query).exec(),
     ]);
 
@@ -153,9 +153,9 @@ export class ArticleService {
 
   async detail(id: string) {
     const data = await this.articleEntity
-        .findById(id)
-        .populate('category', 'title')
-        .populate('tags', 'title');
+      .findById(id)
+      .populate('category', 'title')
+      .populate('tags', 'title');
     return {
       data,
     };
@@ -163,18 +163,18 @@ export class ArticleService {
 
   async recentUpdate() {
     return await this.articleEntity
-        .find()
-        .select('_id title description cover updatedAt')
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .exec();
+      .find()
+      .select('_id title description cover updatedAt createdAt')
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .exec();
   }
 
   async timeLine() {
     const list = await this.articleEntity
-        .find()
-        .select('_id title cover createdAt updatedAt')
-        .sort({ createdAt: -1 });
+      .find()
+      .select('_id title cover createdAt updatedAt')
+      .sort({ createdAt: -1 });
 
     return { data: { list } };
   }
