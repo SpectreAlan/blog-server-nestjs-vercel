@@ -21,6 +21,24 @@ export class VisitorService {
     };
   }
 
+  async today() {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const list = await this.visitorEntity
+      .find({
+        createdAt: {
+          $gte: todayStart,
+          $lte: todayEnd,
+        },
+      })
+      .exec();
+    return list.length;
+  }
+
   async findAll({ page, limit, ip, country, city, province, start, end }) {
     const query: any = {};
     if (ip) {

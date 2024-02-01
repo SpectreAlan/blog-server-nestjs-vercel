@@ -103,10 +103,7 @@ export class SettingService {
     }
     visitor.value = (parseInt(visitor.value) + 1).toString();
     await visitor.save();
-    return {
-      data: parseInt(visitor.value),
-      message: 'success',
-    };
+    return visitor.value;
   }
 
   async getNotice() {

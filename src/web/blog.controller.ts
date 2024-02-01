@@ -73,15 +73,13 @@ export class BlogController {
     return this.poemService.getRandomPoems();
   }
 
-  @Get('visitor')
-  async visitor() {
-    return this.settingService.incrementVisitorCount();
-  }
-
   @Post('statistics')
   @UsePipes(ClassValidatorPipe)
   async statistics(@Body() createVisitorDto: CreateVisitorDto) {
-    return this.visitorService.create(createVisitorDto);
+    const visitor = await this.settingService.incrementVisitorCount();
+    await this.visitorService.create(createVisitorDto);
+    const today = await this.visitorService.today();
+    return { data: { visitor, today } };
   }
 
   @Get('timeLine')
