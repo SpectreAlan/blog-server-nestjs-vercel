@@ -7,5 +7,7 @@ export class CreateVisitorDto {
   readonly os: string;
   readonly country: string;
   readonly province: string;
+  readonly browser: string;
+  readonly organization: string;
   readonly city: string;
 }

@@ -12,6 +12,9 @@ export class VisitorEntity {
   os: string;
 
   @Prop()
+  browser: string;
+
+  @Prop()
   organization: string;
 
   @Prop()

@@ -21,22 +21,23 @@ export class VisitorService {
     };
   }
 
-  async today() {
+  async visitor() {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
     const todayEnd = new Date();
     todayEnd.setHours(23, 59, 59, 999);
 
-    const list = await this.visitorEntity
-      .find({
+    const today = await this.visitorEntity
+      .countDocuments({
         createdAt: {
           $gte: todayStart,
           $lte: todayEnd,
         },
       })
       .exec();
-    return list.length;
+    const total = await this.visitorEntity.countDocuments().exec();
+    return { today, total };
   }
 
   async findAll({ page, limit, ip, country, city, province, start, end }) {
