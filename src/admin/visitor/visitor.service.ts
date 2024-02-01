@@ -16,7 +16,7 @@ export class VisitorService {
     const create = await this.visitorEntity.create(createVisitorDto);
     await create.save();
     return {
-      message: '创建成功',
+      message: 'success',
       data: null,
     };
   }

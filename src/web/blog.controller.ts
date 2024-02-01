@@ -77,7 +77,7 @@ export class BlogController {
   async visitor() {
     const visitor = await this.settingService.incrementVisitorCount();
     const statistics = await this.visitorService.visitor();
-    return { data: { visitor, ...statistics } };
+    return { data: { visitor, ...statistics }, message: 'success' };
   }
 
   @Post('statistics')
