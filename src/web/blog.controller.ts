@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
   UsePipes,
   Query,
@@ -111,7 +110,7 @@ export class BlogController {
 
   @Get('detail')
   detail(@Query('id') id: string) {
-    return this.articleService.detail(id);
+    return this.articleService.detail(id, true);
   }
 
   @Get('related')

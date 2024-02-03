@@ -154,13 +154,17 @@ export class ArticleService {
     return { categoryList, totalArticle, totalCategory };
   }
 
-  async detail(id: string) {
-    const data = await this.articleEntity
+  async detail(id: string, statistics?: boolean) {
+    const article = await this.articleEntity
       .findById(id)
       .populate('category', 'title')
       .populate('tags', 'title');
+    if (statistics) {
+      article.scan = article.scan + 1;
+      article.save();
+    }
     return {
-      data,
+      data: article,
     };
   }
 
