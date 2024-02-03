@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { ArticleEntity } from './entities/article.entity';
 import { TagService } from '../tag/tag.service';
+import { CategoryService } from '../category/category.service';
 import { statistics } from '../../core/utils/statistics';
 
 @Injectable()
@@ -14,6 +15,8 @@ export class ArticleService {
     private readonly articleEntity: Model<ArticleEntity>,
     @Inject(TagService)
     private readonly tagService: TagService,
+    @Inject(CategoryService)
+    private readonly categoryService: CategoryService,
   ) {}
 
   async create(article: CreateArticleDto) {
@@ -55,7 +58,7 @@ export class ArticleService {
     }
 
     if (category) {
-      query.category = category;
+      query.category = await this.categoryService.findIdsByTitle(category);
     }
     const [articles, total] = await Promise.all([
       this.articleEntity

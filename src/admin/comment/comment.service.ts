@@ -17,7 +17,7 @@ export class CommentService {
     const create = await this.commentEntity.create(createCommentDto);
     await create.save();
     return {
-      message: '提交成功',
+      message: '提交成功,评论将在审核通过后显示',
       data: null,
     };
   }

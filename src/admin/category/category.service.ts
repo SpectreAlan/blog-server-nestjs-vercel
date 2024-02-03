@@ -25,11 +25,9 @@ export class CategoryService {
       throw error;
     }
   }
-  async findIdsByTitles(titles: string[]) {
-    const categories = await this.categoryEntity
-      .find({ title: { $in: titles } })
-      .exec();
-    return categories.map((category) => category._id);
+  async findIdsByTitle(title: string) {
+    const category = await this.categoryEntity.findOne({ title }).exec();
+    return category._id;
   }
   async findAll({ page, limit, title }) {
     const query: any = {};
