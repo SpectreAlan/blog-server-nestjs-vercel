@@ -19,6 +19,12 @@ export class CommentEntity {
   @Prop()
   email: string;
 
+  @Prop()
+  platform: string;
+
+  @Prop({ default: '未知' })
+  region: string;
+
   @Prop({ default: -1 })
   parentId: string;
 

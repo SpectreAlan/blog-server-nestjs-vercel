@@ -42,9 +42,9 @@ export class BlogController {
     });
   }
 
-  @Get('comment:id')
+  @Get('comment')
   @UsePipes(ClassValidatorPipe)
-  comments(@Param('id') id: string) {
+  comments(@Query('id') id: string) {
     return this.commentService.comments(id);
   }
 
