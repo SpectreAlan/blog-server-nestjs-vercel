@@ -14,6 +14,9 @@ export class SettingEntity {
 
   @Prop({ default: 'system' })
   type: string;
+
+  @Prop()
+  description: string;
 }
 
 export const SettingSchema = SchemaFactory.createForClass(SettingEntity);

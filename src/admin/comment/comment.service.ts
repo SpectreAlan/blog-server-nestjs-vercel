@@ -1,20 +1,32 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { CommentEntity } from './entities/comment.entity';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { statistics } from '../../core/utils/statistics';
+import { SettingService } from '../setting/setting.service';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectModel('Comment')
     private readonly commentEntity: Model<CommentEntity>,
+    @Inject(SettingService)
+    private readonly settingService: SettingService,
   ) {}
 
-  async create(createCommentDto: CreateCommentDto) {
-    const create = await this.commentEntity.create(createCommentDto);
+  async create(createCommentDto: CreateCommentDto, client?: boolean) {
+    let status = 1;
+    if (client) {
+      const commentApproval =
+        await this.settingService.getSetting('commentApproval');
+      status = commentApproval.toObject().value === '1' ? 1 : 0;
+    }
+    const create = await this.commentEntity.create({
+      ...createCommentDto,
+      status,
+    });
     await create.save();
     return {
       message: '提交成功,评论将在审核通过后显示',

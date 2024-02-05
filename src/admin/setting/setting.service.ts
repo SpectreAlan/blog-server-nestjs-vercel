@@ -54,7 +54,7 @@ export class SettingService {
     return { data };
   }
 
-  getSetting(key: string) {
+  async getSetting(key: string) {
     return this.settingEntity.findOne({ key });
   }
 

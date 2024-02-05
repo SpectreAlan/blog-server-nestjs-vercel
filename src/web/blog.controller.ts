@@ -33,12 +33,14 @@ export class BlogController {
   @Post('comment')
   @UsePipes(ClassValidatorPipe)
   comment(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create({
-      ...createCommentDto,
-      author: 0,
-      pinned: 0,
-      status: 0,
-    });
+    return this.commentService.create(
+      {
+        ...createCommentDto,
+        author: 0,
+        pinned: 0,
+      },
+      true,
+    );
   }
 
   @Get('comment')
