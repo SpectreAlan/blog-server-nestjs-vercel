@@ -21,7 +21,7 @@ export class CommentService {
     if (client) {
       const commentApproval =
         await this.settingService.getSetting('commentApproval');
-      status = commentApproval.toObject().value === '1' ? 1 : 0;
+      status = commentApproval.toObject().value === '1' ? 0 : 1;
     }
     const create = await this.commentEntity.create({
       ...createCommentDto,
@@ -29,7 +29,8 @@ export class CommentService {
     });
     await create.save();
     return {
-      message: '提交成功,评论将在审核通过后显示',
+      message:
+        !client || status ? '提交成功' : '提交成功,评论将在审核通过后显示',
       data: null,
     };
   }
@@ -96,7 +97,7 @@ export class CommentService {
   }
 
   async comments(article: string) {
-    const list = await this.commentEntity.find({ article });
+    const list = await this.commentEntity.find({ article, status: 1 });
     return {
       data: { list },
     };
