@@ -173,7 +173,7 @@ export class ArticleService {
     return await this.articleEntity
       .find()
       .select('_id title description cover updatedAt createdAt')
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .limit(10)
       .exec();
   }
@@ -182,7 +182,7 @@ export class ArticleService {
     const list = await this.articleEntity
       .find()
       .select('_id title cover createdAt updatedAt')
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
 
     return { data: { list } };
   }
