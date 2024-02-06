@@ -161,6 +161,7 @@ export class ArticleService {
       .populate('tags', 'title');
     if (statistics) {
       article.scan = article.scan + 1;
+      article.updatedAt = article.updatedAt;
       article.save();
     }
     return {
