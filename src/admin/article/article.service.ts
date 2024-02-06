@@ -161,7 +161,6 @@ export class ArticleService {
       .populate('tags', 'title');
     if (statistics) {
       article.scan = article.scan + 1;
-      article.updatedAt = article.updatedAt;
       article.save();
     }
     return {
@@ -173,7 +172,7 @@ export class ArticleService {
     return await this.articleEntity
       .find()
       .select('_id title description cover updatedAt createdAt')
-      .sort({ updatedAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(10)
       .exec();
   }
@@ -182,7 +181,7 @@ export class ArticleService {
     const list = await this.articleEntity
       .find()
       .select('_id title cover createdAt updatedAt')
-      .sort({ updatedAt: -1 });
+      .sort({ createdAt: -1 });
 
     return { data: { list } };
   }
