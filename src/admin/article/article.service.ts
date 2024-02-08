@@ -170,7 +170,7 @@ export class ArticleService {
 
   async recentUpdate() {
     return await this.articleEntity
-      .find({status: 1})
+      .find({ status: 1 })
       .select('_id title description cover updatedAt createdAt')
       .sort({ createdAt: -1 })
       .limit(10)
@@ -179,7 +179,7 @@ export class ArticleService {
 
   async timeLine() {
     const list = await this.articleEntity
-      .find({status: 1})
+      .find({ status: 1 })
       .select('_id title cover createdAt updatedAt')
       .sort({ createdAt: -1 });
 

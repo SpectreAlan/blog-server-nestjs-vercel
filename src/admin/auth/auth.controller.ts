@@ -18,7 +18,7 @@ import { LoginUserDto } from '../user/dto/login-user.dto';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 import { AuthService } from './auth.service';
 import * as svgCaptcha from 'svg-captcha';
-import { LoginSmsDto } from '../user/dto/login-sms.dto';
+import { LoginGetSmsDto, LoginSmsDto } from '../user/dto/login-sms.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -62,8 +62,9 @@ export class AuthController {
     res.status(200).send(captcha.data);
   }
   @Post('sms')
+  @UsePipes(ClassValidatorPipe)
   @UseInterceptors(ResponseInterceptor)
-  async sms(@Body() data: { phone: number }, @Req() req: ParameterDecorator) {
+  async sms(@Body() data: LoginGetSmsDto, @Req() req: ParameterDecorator) {
     return this.authService.generateSms(req, data.phone);
   }
 

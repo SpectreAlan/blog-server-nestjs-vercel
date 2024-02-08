@@ -9,6 +9,7 @@ import { PoemModule } from './admin/poem/poem.module';
 import { CategoryModule } from './admin/category/category.module';
 import { CommentModule } from './admin/comment/comment.module';
 import { VisitorModule } from './admin/visitor/visitor.module';
+import { LogModule } from './admin/log/log.module';
 import { BlogModule } from './web/blog.module';
 import { ScheduleCustomModule } from './admin/schedule/schedule.module';
 import { APP_FILTER } from '@nestjs/core';
@@ -38,6 +39,7 @@ dotenv.config();
     VisitorModule,
     ScheduleCustomModule,
     BlogModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [
