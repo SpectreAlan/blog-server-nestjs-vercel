@@ -8,6 +8,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { setToken } from '../../core/utils/common';
+import { LoginSmsDto } from './dto/login-sms.dto';
 
 @Injectable()
 export class UserService {
@@ -46,7 +47,7 @@ export class UserService {
       const { _id, role, avatar, account, nickName, email, status } =
         user.toObject();
       if (status) {
-        const data = { _id, role, avatar, account, nickName, email };
+        const data = { id: _id, role, avatar, account, nickName, email };
         const token = setToken(role, account);
         return {
           data: { ...data, token },
@@ -59,6 +60,35 @@ export class UserService {
       );
     }
     throw new HttpException('用户名/密码不正确', HttpStatus.BAD_REQUEST);
+  }
+  async loginSms(loginSmsDto: LoginSmsDto, req) {
+    const session: { user: UserEntity; sms: number } | null = req.session?.sms;
+    if (!session) {
+      throw new HttpException('验证码已过期', HttpStatus.BAD_REQUEST);
+    }
+    const { phone, sms } = loginSmsDto;
+    const { sms: smsSession, user } = session;
+    if (
+      !smsSession ||
+      !sms ||
+      sms !== String(smsSession) ||
+      phone !== user.phone
+    ) {
+      throw new HttpException('验证码不正确', HttpStatus.BAD_REQUEST);
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const { _id, role, avatar, account, nickName, email, status } = user;
+    delete req.session.sms;
+    if (status) {
+      const data = { id: _id, role, avatar, account, nickName, email };
+      const token = setToken(role, account);
+      return {
+        data: { ...data, token },
+        message: 'success',
+      };
+    }
+    throw new HttpException('用户已禁用，请联系管理系', HttpStatus.BAD_REQUEST);
   }
 
   async findAll({ page, limit, account, status, role, email }) {
@@ -112,6 +142,10 @@ export class UserService {
     return {
       data,
     };
+  }
+
+  async findByPhone(phone: number) {
+    return this.userEntity.findOne({ phone });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
