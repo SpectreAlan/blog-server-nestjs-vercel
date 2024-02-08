@@ -18,6 +18,12 @@ export class UserEntity {
   email: string;
 
   @Prop()
+  phone: string;
+
+  @Prop()
+  pushDeer: string;
+
+  @Prop()
   role: string;
 
   @Prop({ default: 1 })

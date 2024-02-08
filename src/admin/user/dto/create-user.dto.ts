@@ -8,5 +8,7 @@ export class CreateUserDto {
   readonly avatar: string;
   readonly email: string;
   readonly role: string;
+  readonly phone: string;
+  readonly pushDeer: string;
   readonly status: number;
 }
