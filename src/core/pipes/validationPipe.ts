@@ -6,7 +6,7 @@ export class ClassValidatorPipe extends ValidationPipe {
   public async transform(value: unknown, metadata: any): Promise<unknown> {
     const transformedValue = plainToClass(metadata.metatype, value);
     const errors = await validate(transformedValue as object, {
-      skipMissingProperties: true,
+      skipMissingProperties: false,
     });
     if (errors.length > 0) {
       const errorMessage = this.handleError(errors);
