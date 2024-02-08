@@ -12,22 +12,19 @@ import { AuthGuard } from '@nestjs/passport';
 import { UseGuards, Inject } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import { UserService } from '../user/user.service';
-import { SettingService } from '../setting/setting.service';
 import { responseLoginResult } from '../../core/utils/common';
 import { ClassValidatorPipe } from '../../core/pipes/validationPipe';
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { ResponseInterceptor } from '../../core/interceptors/response.interceptor';
 import { AuthService } from './auth.service';
 import * as svgCaptcha from 'svg-captcha';
-import { LoginSmsDto } from './dto/login-sms.dto';
+import { LoginSmsDto } from '../user/dto/login-sms.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     @Inject(UserService)
     private readonly userService: UserService,
-    @Inject(SettingService)
-    private readonly settingService: SettingService,
     @Inject(AuthService)
     private readonly authService: AuthService,
   ) {}
@@ -64,17 +61,16 @@ export class AuthController {
     res.contentType('svg');
     res.status(200).send(captcha.data);
   }
-
+  @Post('sms')
   @UseInterceptors(ResponseInterceptor)
-  @Get('sms')
-  async sms(@Req() req: ParameterDecorator) {
-    return this.authService.generateSms(req);
+  async sms(@Body() data: { phone: number }, @Req() req: ParameterDecorator) {
+    return this.authService.generateSms(req, data.phone);
   }
 
   @Post('loginBySms')
   @UsePipes(ClassValidatorPipe)
   @UseInterceptors(ResponseInterceptor)
   async loginBySms(@Body() loginSmsDto: LoginSmsDto, @Req() req) {
-    return this.authService.verifySms(loginSmsDto, req.session?.sms);
+    return this.userService.loginSms(loginSmsDto, req);
   }
 }
