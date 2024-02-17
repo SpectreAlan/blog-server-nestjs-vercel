@@ -31,7 +31,7 @@ export class ScheduleService {
     });
     const oss = aliOSS();
     const res = await oss.put(
-      `/blog/cover/${new Date().getDate()}.jpg'`,
+      `/blog/cover/${new Date().getDate()}.jpg`,
       buffer.data,
     );
     console.log(res);
