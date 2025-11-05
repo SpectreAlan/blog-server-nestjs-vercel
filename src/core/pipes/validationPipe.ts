@@ -3,7 +3,10 @@ import { plainToClass } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 
 export class ClassValidatorPipe extends ValidationPipe {
-  public async transform(value: unknown, metadata: any): Promise<unknown> {
+  public async transform(value: any, metadata: any): Promise<unknown> {
+    if (!metadata.metatype || !this.toValidate(metadata.metatype)) {
+      return value;
+    }
     const transformedValue = plainToClass(metadata.metatype, value);
     const errors = await validate(transformedValue as object, {
       skipMissingProperties: false,
@@ -15,6 +18,10 @@ export class ClassValidatorPipe extends ValidationPipe {
     return transformedValue;
   }
 
+  private toValidate(metatype: any): boolean {
+    const types: any[] = [String, Boolean, Number, Array, Object];
+    return !types.includes(metatype);
+  }
   private handleError(errors: ValidationError[]): string {
     return errors
       .map((error) =>
